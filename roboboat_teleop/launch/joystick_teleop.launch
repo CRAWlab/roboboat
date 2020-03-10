@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="joystick" default="true" />
+
+  <group ns="joy_teleop">
+
+    <group>
+      <rosparam command="load" file="$(find roboboat_teleop)/config/roboboat_teleop.yaml"/>
+      <param name="joy_node/dev" value="$(arg joy_dev)" />
+    </group>
+
+    <node pkg="joy" type="joy_node" name="joy_node" />
+
+    <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy">
+      <remap from="/joy_teleop/cmd_vel" to="/cmd_vel"/>
+    </node>
+  </group>
+</launch>

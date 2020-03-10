@@ -1,0 +1,9 @@
+<launch>
+    <arg name="port" default="/dev/ttyUSB1" />
+    <arg name="bps" default="115200" />
+
+    <node pkg="roboboat_estop_comms" type="estop_comms.py" name="estop_comms" output="screen" respawn="true">
+        <param name="port" type="string" value="$(arg port)"/>
+        <param name="bps" type="string" value="$(arg bps)"/>
+    </node>
+</launch>

@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="roboboat_td_network_status" type="TD_TCP_StatusServer.py" name="td_status_server" output="screen" respawn="true">
+    </node>
+</launch>

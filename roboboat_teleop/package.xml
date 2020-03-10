@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>roboboat_teleop</name>
+  <version>0.0.2</version>
+  <description>Teleoperation for CRAWLAB RoboBoat</description>
+
+  <author email="joshua.vaughan@louisiana.edu">Joshua Vaughan</author>
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://www.ucs.louisiana.edu/~jev9637/</url>
+  <url type="bugtracker">https://github.com/CRAWlab/roboboat/issues</url>
+  <url type="repository">https://github.com/crawlab/roboboat</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+
+
+  <run_depend>joy</run_depend>
+  <run_depend>rostopic</run_depend>
+  <run_depend>teleop_twist_joy</run_depend>
+  <run_depend>teleop_twist_keyboard</run_depend>
+  <run_depend>twist_mux</run_depend>
+
+  <export>
+  </export>
+</package>
