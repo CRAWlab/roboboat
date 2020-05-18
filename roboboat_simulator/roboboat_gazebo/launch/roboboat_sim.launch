@@ -1,0 +1,73 @@
+<launch>
+
+	<!-- Main launch file to simulate UL's RoboBoat in Gazebo -->
+	<!-- Built on the foundations of OSRF/VRX and Clearpath/Heron -->
+
+	<!-- Debug flag -->
+  	<arg name="hydro_debug" default="0"/>
+	<rosparam param="/use_sim_time">true</rosparam>
+
+	<!-- Vehicle's initial pose -->
+	<arg name="x"     default="0"/>
+	<arg name="y"     default="0"/>
+	<arg name="z"     value="0"/> <!-- TODO: Figure out what the draft value should be, and if this is +/- -->
+	<arg name="roll"  value="0"/>
+	<arg name="pitch" value="0"/>
+	<arg name="yaw"   default="0"/>
+
+	<!-- Shouldn't matter, but define a namespace for the RoboBoat.
+	Should matter if simulating more than one RoboBoat -->
+	<arg name="namespace" default=""/>
+	<arg name="config" default="base" />
+
+	<!-- Group a set of nodes together using this namespace -->
+	<group ns="/$(arg namespace)">
+		<!-- TODO: Include Controller -->
+			<!-- TODO: Create controller -->
+
+		<!-- Filter for Imu message -->
+	    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick">
+	      <param name="~use_magnetic_field_msg" value="false" />
+	      <param name="~use_mag" value="false" />
+	      <param name="world_frame" value="enu" />
+	      <param name="publish_debug_topics" value="true" />
+	      <param name="~publish_tf" value="false" />
+	    </node>
+
+	    <!-- Translate Imu's quaternion to Roll/Pitch/Yaw -->
+	    <node pkg="roboboat_gazebo" type="rpy_translator.py" name="rpy_translator" />
+
+	    <group if="$(eval namespace == '')">
+	      <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+	      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	            args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model roboboat -param /robot_description"/>
+	    </group>
+
+	    <group unless="$(eval namespace == '')">
+	      <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+	      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	            args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/>
+	    </group>
+
+	    <!-- Translates navsat/velocity from Vector3Stamped to TwistStamped on navsat/vel -->
+	    <node pkg="roboboat_gazebo" type="navsat_vel_translate.py" name="navvel_translate" />
+
+	    <!-- BA: Is this like an EStop? -->
+	    <node pkg="roboboat_gazebo" type="activate_control_service.py" name="activate_control_service" />
+
+	</group>
+	
+	<!-- Basic localization -->
+	<rosparam param="/$(arg namespace)/ekf_localization_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
+	<rosparam param="/$(arg namespace)/navsat_transform_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
+	<rosparam param="/$(arg namespace)/navsat_transform_node/use_odometry_yaw">true</rosparam>
+
+	<include file="$(find roboboat_control)/launch/control.launch" ns="/$(arg namespace)"/>
+
+	<!-- Launches RoboBoat's description nodes -->
+	<include file="$(find roboboat_description)/launch/description.launch">
+		<arg name="namespace" value="$(arg namespace)" />
+		<arg name="hydro_debug" value="$(arg hydro_debug)" />
+	</include>
+
+</launch>

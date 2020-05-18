@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="mass" value="22.69"/> <!-- TODO: Adjust this to actual vessel mass: approximately 50/2.204 kg -->
+
+	<!-- Center of gravity -->
+	<xacro:property name="cog" value="0 0 0"/> <!-- TODO: Adjust this to be NEGATIVE DRAFT from roboboat_gazebo/launch/roboboat_sim.launch -->
+	
+	<!-- Fluid density -->
+	<xacro:property name="rho" value="1000"/>
+
+	<!-- Loading vehicle's specific macros -->
+	<xacro:include filename="$(find roboboat_description)/urdf/snippets.xacro"/>
+
+	<!-- Define a color -->
+	<material name="dark_gray"><color rgba="0.2 0.2 0.2 1.0"/></material>
+
+	<!-- Vehicle macro -->
+  	<xacro:macro name="roboboat_base" params="namespace *gazebo">
+
+		<!-- Rigid body description of the base link -->
+		<link name="${namespace}base_link">
+		<!--
+		Be careful to setup the coefficients for the inertial tensor,
+		otherwise your model will become unstable on Gazebo
+		-->
+
+			<visual>
+	          <origin xyz="0 0 0" rpy="1.570796327 0 0"/>
+	          <geometry>
+	            <mesh filename="package://roboboat_description/meshes/Final-Catamaran.stl" scale="1 1 1" />
+	          </geometry>
+	          <material name="dark_gray" />
+	        </visual>
+
+	        <collision>
+	          <origin xyz="0 0 0" rpy="0 0 0"/>
+	          <geometry>
+	            <mesh filename="package://roboboat_description/meshes/Final-Catamaran.stl" scale="1 1 1" />
+	          </geometry>
+	        </collision>
+
+      	</link>
+
+      	<!-- Dummy Link to contain the inertial information for base_link -->
+		<link name="${namespace}dummy_link">
+			<inertial>
+				  <mass value="${mass}" />
+				  <origin xyz="${cog}" rpy="0 0 0"/>
+				  <inertia ixx="22.59" ixy="0" iyy = "22.59" ixz="0" iyz="0" izz="10" />
+				  <!-- <inertia ixx="0.017474" ixy="-0.000013" ixz="-0.000102"
+				                          iyy="0.017781"  iyz="-0.000058"
+				                                          izz="0.033235" /> -->
+			</inertial>
+		</link>
+
+		<!-- Join the dummy frame and the base_link frames -->
+		<joint name="dummy_to_base" type="fixed">
+	        <parent link="${namespace}base_link" />
+	        <child link="${namespace}dummy_link" />
+	    </joint>
+
+		<gazebo reference="${namespace}base_link">
+		  <selfCollide>false</selfCollide>
+		  <material>Gazebo/DarkGrey</material>
+		  <gravity>1</gravity>
+		</gazebo>
+
+		<!-- Set up hydrodynamic plugin given as input parameter -->
+    	<xacro:insert_block name="gazebo"/>
+
+	    <!-- Include the thruster modules -->
+	    <xacro:include filename="$(find roboboat_description)/urdf/actuators.xacro"/>
+
+	    <!-- Include the sensor modules -->
+	    <xacro:include filename="$(find roboboat_description)/urdf/sensors.xacro"/>
+
+	    <!-- BA  5/18/2020: I don't think we need this
+	    <xacro:include filename="$(find roboboat_description)/urdf/accessories.urdf.xacro" />
+		-->
+
+		<!-- BA 5/18/2020: Or this -->
+	    <!-- Optional custom includes. -->
+	    <!--
+	    <xacro:include filename="$(optenv ROBOBOAT_URDF_EXTRAS empty.urdf)" />
+	    -->
+
+	  </xacro:macro>
+</robot>

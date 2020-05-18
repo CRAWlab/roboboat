@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="world_pkg" default="uuv_gazebo_worlds" />
+  <arg name="world_pkg_file" default="ocean_waves.launch" />
+  <arg name="world_file" default="0" />
+  <arg name="use_pkg_path" default="1" />
+
+  <arg name="hydro_debug" default="0" />
+  <arg name="config" default="base" />
+
+  <arg name="x"     default="0"/>
+  <arg name="y"     default="0"/>
+  <arg name="yaw"   default="0"/>
+
+  <arg name="namespace" default="" />
+
+  <!-- Launch a world file using an absolute file path -->
+  <group unless="$(arg use_pkg_path)">
+    <include file="$(arg world_file)" />
+  </group>
+
+  <!-- Launch a world file from the launch folder of a package -->
+  <group if="$(arg use_pkg_path)">
+    <include file="$(eval find(arg('world_pkg')) + '/launch/' + arg('world_pkg_file'))" />
+  </group>
+
+  <!-- Start simulating a Roboboat -->
+  <include file="$(find roboboat_gazebo)/launch/roboboat_sim.launch">
+    <arg name="x" value="$(arg x)" />
+    <arg name="y" value="$(arg y)" />
+    <arg name="yaw" value="$(arg yaw)" />
+    <arg name="namespace" value="$(arg namespace)" />
+  </include>
+
+</launch>

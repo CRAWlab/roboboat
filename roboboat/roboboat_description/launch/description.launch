@@ -1,0 +1,27 @@
+<launch>
+
+	<arg name="hydro_debug" default="0" />
+	<arg name="config" default="base" />
+
+	<!-- Vehicle's namespace -->
+  <arg name="namespace" default=""/>
+
+  <group ns="/$(arg namespace)">
+
+  	<group if="$(eval namespace == '')">
+      <param name="robot_description"
+             command="$(find roboboat_description)/scripts/env_run $(find roboboat_description)/urdf/configs/$(arg config)
+                      $(find xacro)/xacro.py '$(find roboboat_description)/urdf/roboboat.urdf.xacro' --inorder debug:=$(arg hydro_debug)" />
+    </group>
+
+    <group unless="$(eval namespace == '')">
+      <param name="robot_description"
+             command="$(find roboboat_description)/scripts/env_run $(find roboboat_description)/urdf/configs/$(arg config)
+                      $(find xacro)/xacro.py '$(find roboboat_description)/urdf/roboboat.urdf.xacro' --inorder debug:=$(arg hydro_debug) namespace:=$(arg namespace) suffix_ns:=$(arg namespace)/" />
+    </group>
+
+    <!-- Publish robot model for ROS -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+  </group>
+  
+ </launch>
