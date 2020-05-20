@@ -17,42 +17,53 @@
       <drift>0.0001 0.0001 0.0001</drift>
     </plugin>
   </gazebo>
-
   <link name="$(arg suffix_ns)navsat_link" />
 
-  <!-- TODO: Find these environment variables: ROBOBOAT_NAVSAT_UBLOX_XYZ, ROBOBOAT_NAVSAT_UBLOX_RPY -->
   <joint name="navsat_joint" type="fixed">
     <parent link="$(arg suffix_ns)base_link" />
     <child link="$(arg suffix_ns)navsat_link" />
     <origin xyz="$(optenv ROBOBOAT_NAVSAT_UBLOX_XYZ 0.015 0.050 0.072)"
       rpy="$(optenv ROBOBOAT_NAVSAT_UBLOX_RPY 0.0 0.0 0.0)" />
-  </joint>
+    </joint>
 
-  <!-- IMU -->
-  <gazebo>
-    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
-      <robotNamespace>/$(arg namespace)</robotNamespace>
-      <updateRate>50.0</updateRate>
-      <bodyName>$(arg suffix_ns)imu_link</bodyName>
-      <frameId>$(arg suffix_ns)imu_link</frameId>
-      <topicName>/$(arg suffix_ns)imu/data_raw</topicName>
-      <accelDrift>0.005 0.005 0.005</accelDrift>
-      <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
-      <rateDrift>0.005 0.005 0.005 </rateDrift>
-      <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
-      <headingDrift>0.005</headingDrift>
-      <headingGaussianNoise>0.005</headingGaussianNoise>
-    </plugin>
-  </gazebo>
+
+    <!-- IMU -->
+    <gazebo>
+      <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+        <robotNamespace>/$(arg namespace)</robotNamespace>
+        <updateRate>50.0</updateRate>
+        <bodyName>$(arg suffix_ns)imu_link</bodyName>
+        <frameId>$(arg suffix_ns)imu_link</frameId>
+        <topicName>/$(arg suffix_ns)imu/data_raw</topicName>
+        <accelDrift>0.005 0.005 0.005</accelDrift>
+        <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
+        <rateDrift>0.005 0.005 0.005 </rateDrift>
+        <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+        <headingDrift>0.005</headingDrift>
+        <headingGaussianNoise>0.005</headingGaussianNoise>
+      </plugin>
+    </gazebo>
 
     <link name="$(arg suffix_ns)imu_link" />
-
-    <!-- TODO: Find these environment variables: ROBOBOAT_IMU_UM6_XYZ, ROBOBOAT_IMU_UM6_RPY -->
     <joint name="$(arg suffix_ns)imu_joint" type="fixed">
       <origin xyz="$(optenv ROBOBOAT_IMU_UM6_XYZ -0.1397 0.0 0)" rpy="$(optenv ROBOBOAT_IMU_UM6_RPY 0 0.0 0.0)" />
       <parent link="$(arg suffix_ns)base_link" />
       <child link="$(arg suffix_ns)imu_link" />
     </joint>
+
+    <!-- Magnetometer -->
+    <gazebo>
+      <plugin name="mag_controller" filename="libhector_gazebo_ros_magnetic.so">
+        <updateRate>50</updateRate>
+        <robotNamespace>/$(arg namespace)</robotNamespace>
+        <bodyName>$(arg suffix_ns)imu_link</bodyName>
+        <frameId>$(arg suffix_ns)imu_link</frameId>
+        <topicName>/$(arg suffix_ns)imu/mag</topicName>
+        <referenceHeading>90</referenceHeading>
+        <drift>0.0005 0.0005 0.0005</drift>
+        <gaussianNoise>0.025 0.025 0.025</gaussianNoise>
+      </plugin>
+    </gazebo>
 
     <!-- Mount a Perfect Pose 3D sensor. -->
     <gazebo>
@@ -66,6 +77,4 @@
       </plugin>
     </gazebo>
 
-  <!-- Mount a ZED (or 2) -->
-
-</robot>
+  </robot>

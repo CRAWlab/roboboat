@@ -11,7 +11,6 @@
 
   <!-- Create the roboboat -->
   <xacro:roboboat_base namespace="$(arg suffix_ns)">
-
     <!-- The underwater object plugin is given as an input block parameter to
      allow the addition of external models of manipulator units -->
     <gazebo>

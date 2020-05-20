@@ -5,14 +5,12 @@
     <xacro:property name="roboboat_cob" value="0 0 0"/>
 
     <!-- Vehicle's actual volume (Gazebo cannot compute the volume out of the mesh) -->
-
-    <!-- TODO: This is an estimate -->
-    <xacro:property name="roboboat_volume" value="0.27"/>
+    <xacro:property name="roboboat_volume" value="0.13"/>
 
     <!-- Describing the dimensions of the vehicle's bounding box -->
-    <xacro:property name="roboboat_length" value="1.524"/>
-    <xacro:property name="roboboat_width"  value="0.8123"/>
-    <xacro:property name="roboboat_height" value="0.254"/>
+    <xacro:property name="roboboat_length" value="1.35"/>
+    <xacro:property name="roboboat_width"  value="1.0"/>
+    <xacro:property name="roboboat_height" value="0.32"/>
 
     <xacro:macro name="roboboat_hydro_model" params="namespace">
 
@@ -29,12 +27,9 @@
                    to receive the additional parameters used to describe the
                    buoyancy force computation for the surface vessel.
               -->
-
-              <!-- TODO: What do these represent? -->
               <metacentric_width>0.1</metacentric_width>
               <metacentric_length>0.1</metacentric_length>
-
-              <submerged_height>0.0635</submerged_height> <!-- TODO: Get this more accurate -->
+              <submerged_height>0.02</submerged_height>
               <hydrodynamic_model>
                   <type>fossen</type>
                   <added_mass>
@@ -46,8 +41,6 @@
                      0   0   0   0   0   0
                 </added_mass>
                 <offset_added_mass>0</offset_added_mass>
-
-                  <!-- TODO: This is default from Heron. Update -->
                   <linear_damping>
                       -16.44998712 -15.79776044 -100 -13 -13 -6
                   </linear_damping>
