@@ -27,54 +27,73 @@
     </joint>
 
 
-    <!-- IMU -->
-    <gazebo>
-      <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
-        <robotNamespace>/$(arg namespace)</robotNamespace>
-        <updateRate>50.0</updateRate>
-        <bodyName>$(arg suffix_ns)imu_link</bodyName>
-        <frameId>$(arg suffix_ns)imu_link</frameId>
-        <topicName>/$(arg suffix_ns)imu/data_raw</topicName>
-        <accelDrift>0.005 0.005 0.005</accelDrift>
-        <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
-        <rateDrift>0.005 0.005 0.005 </rateDrift>
-        <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
-        <headingDrift>0.005</headingDrift>
-        <headingGaussianNoise>0.005</headingGaussianNoise>
-      </plugin>
-    </gazebo>
+  <!-- IMU -->
+  <gazebo>
+    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <updateRate>50.0</updateRate>
+      <bodyName>$(arg suffix_ns)imu_link</bodyName>
+      <frameId>$(arg suffix_ns)imu_link</frameId>
+      <topicName>/$(arg suffix_ns)imu/data_raw</topicName>
+      <accelDrift>0.005 0.005 0.005</accelDrift>
+      <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
+      <rateDrift>0.005 0.005 0.005 </rateDrift>
+      <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+      <headingDrift>0.005</headingDrift>
+      <headingGaussianNoise>0.005</headingGaussianNoise>
+    </plugin>
+  </gazebo>
 
-    <link name="$(arg suffix_ns)imu_link" />
-    <joint name="$(arg suffix_ns)imu_joint" type="fixed">
-      <origin xyz="$(optenv ROBOBOAT_IMU_UM6_XYZ -0.1397 0.0 0)" rpy="$(optenv ROBOBOAT_IMU_UM6_RPY 0 0.0 0.0)" />
-      <parent link="$(arg suffix_ns)base_link" />
-      <child link="$(arg suffix_ns)imu_link" />
-    </joint>
+  <link name="$(arg suffix_ns)imu_link" />
+  <joint name="$(arg suffix_ns)imu_joint" type="fixed">
+    <origin xyz="$(optenv ROBOBOAT_IMU_UM6_XYZ -0.1397 0.0 0)" rpy="$(optenv ROBOBOAT_IMU_UM6_RPY 0 0.0 0.0)" />
+    <parent link="$(arg suffix_ns)base_link" />
+    <child link="$(arg suffix_ns)imu_link" />
+  </joint>
 
-    <!-- Magnetometer -->
-    <gazebo>
-      <plugin name="mag_controller" filename="libhector_gazebo_ros_magnetic.so">
-        <updateRate>50</updateRate>
-        <robotNamespace>/$(arg namespace)</robotNamespace>
-        <bodyName>$(arg suffix_ns)imu_link</bodyName>
-        <frameId>$(arg suffix_ns)imu_link</frameId>
-        <topicName>/$(arg suffix_ns)imu/mag</topicName>
-        <referenceHeading>90</referenceHeading>
-        <drift>0.0005 0.0005 0.0005</drift>
-        <gaussianNoise>0.025 0.025 0.025</gaussianNoise>
-      </plugin>
-    </gazebo>
+  <!-- Magnetometer -->
+  <gazebo>
+    <plugin name="mag_controller" filename="libhector_gazebo_ros_magnetic.so">
+      <updateRate>50</updateRate>
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <bodyName>$(arg suffix_ns)imu_link</bodyName>
+      <frameId>$(arg suffix_ns)imu_link</frameId>
+      <topicName>/$(arg suffix_ns)imu/mag</topicName>
+      <referenceHeading>90</referenceHeading>
+      <drift>0.0005 0.0005 0.0005</drift>
+      <gaussianNoise>0.025 0.025 0.025</gaussianNoise>
+    </plugin>
+  </gazebo>
 
-    <!-- Mount a Perfect Pose 3D sensor. -->
-    <gazebo>
-      <plugin filename="libgazebo_ros_p3d.so" name="groundtruth_sim">
-        <updateRate>20.0</updateRate>
-        <robotNamespace>/$(arg namespace)</robotNamespace>
-        <bodyName>$(arg suffix_ns)base_link</bodyName>
-        <topicName>/$(arg suffix_ns)pose_gt</topicName>
-        <gaussianNoise>0.0</gaussianNoise>
-        <frameName>world</frameName>
-      </plugin>
-    </gazebo>
+  <!-- Mount a Perfect Pose 3D sensor. -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="groundtruth_sim">
+      <updateRate>20.0</updateRate>
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <bodyName>$(arg suffix_ns)base_link</bodyName>
+      <topicName>/$(arg suffix_ns)pose_gt</topicName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <frameName>world</frameName>
+    </plugin>
+  </gazebo>
 
-  </robot>
+  <!-- Bow ZED-->
+  <xacro:vision_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" zed_id="0">
+      <origin xyz="0 0.33476 0.16129" rpy="1.5708 0 -3.1416" />
+  </xacro:vision_macro>
+
+  <!-- Stern ZED-->
+  <xacro:vision_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" zed_id="1">
+      <origin xyz="0 -0.33476 0.16129" rpy="1.5708 0 0" />
+  </xacro:vision_macro>
+
+  <!-- Bow LiDAR-->
+  <xacro:lidar_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" lidar_id="0">
+      <origin xyz="0 0.4399 0.07275" rpy="1.5708 0 3.1416" />
+  </xacro:lidar_macro>
+
+  <!-- Stern LiDAR-->
+  <xacro:lidar_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" lidar_id="1">
+      <origin xyz="0 -0.4399 0.07275" rpy="1.5708 0 0" />
+  </xacro:lidar_macro>
+</robot>
