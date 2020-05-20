@@ -3,10 +3,10 @@
 
   <!--Gazebo Plugin for simulating roboboat dynamics-->
   <gazebo>
-    <plugin name="roboboat_dynamic" filename="libheron_gazebo_plugins.so">
-          <maxForce>62.0</maxForce>
+    <plugin name="roboboat_dynamic" filename="libroboboat_gazebo_plugins.so">
+          <maxForce>62.0</maxForce> <!-- TODO: What does this represent? -->
           <bodyName>base_link</bodyName>
-          <waterDensity>997.7735</waterDensity>
+          <waterDensity>1000.0</waterDensity>
           <waterLevel>1</waterLevel>
           <xyzDampingFactor>20.0</xyzDampingFactor>
           <yawDampingFactor>20.0</yawDampingFactor>

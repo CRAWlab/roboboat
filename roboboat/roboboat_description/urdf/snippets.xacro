@@ -17,23 +17,40 @@
 
       <visual>
         <geometry>
-          <mesh filename="package://roboboat_description/meshes/prop.dae" scale="1 1 1" />
+          <mesh filename="package://roboboat_description/meshes/base_link_to_port_bow.STL" />
         </geometry>
+
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+
       </visual>
 
+      <!--Is this causing some rotation? -->
+      <!-- Actuators not moving with hull -->
       <inertial>
-        <mass value="0.001" />
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <inertia ixx="0.000000017" ixy="0.0" ixz="0.0"
-               iyy="0.000000017" iyz="0.0"
-               izz="0.000000017" />
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.19483" />
+        <inertia
+          ixx="0.00013116"
+          ixy="8.7805E-08"
+          ixz="-1.5186E-07"
+          iyy="0.00012713"
+          iyz="-1.4655E-07"
+          izz="0.00018124" />
       </inertial>
+
     </link>
 
     <!-- Joint between thruster link and vehicle base link -->
     <joint name="${suffix_ns}thruster_${thruster_id}_joint" type="continuous">
       <xacro:insert_block name="origin" />
-      <axis xyz="1 0 0" />
+      <axis xyz="0 0 1" />
       <parent link="${suffix_ns}base_link" />
       <child link="${suffix_ns}thruster_${thruster_id}" />
     </joint>
@@ -60,8 +77,10 @@
         <clampMin>-100</clampMin>
 
         <!-- Minimum and maximum thrust force output allowed -->
-        <thrustMin>-35</thrustMin>
-        <thrustMax>35</thrustMax>
+        <!-- Found from scaling the KgF values to Newtons from: https://bluerobotics.com/store/thrusters/t100-t200-thrusters/t200-thruster/ -->
+        <!-- Using 16V performance curve -->
+        <thrustMin>-40</thrustMin>
+        <thrustMax>51.5</thrustMax>
 
         <!--
         Value from 0 to 1 to set the efficiency of the output thrust force
@@ -93,7 +112,7 @@
         <conversion>
           <type>LinearInterp</type>
           <inputValues>-1.0 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1.0</inputValues>
-          <outputValues>-19.88 -16.52 -12.6 -5.6 -1.4 0.0 2.24 9.52 21.28 28.0 33.6</outputValues>
+          <outputValues>-39.1 -29.32 -19.02 -10.00 -3.14 0.0 3.92 12.55 23.83 37.46 51.5</outputValues>
         </conversion>
 
       </plugin>
@@ -103,7 +122,5 @@
       <selfCollide>false</selfCollide>
     </gazebo>
   </xacro:macro>
-
-
 
 </robot>

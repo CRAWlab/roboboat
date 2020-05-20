@@ -8,15 +8,24 @@
           aware that Gazebo does not use the SNAME convention per default.
     -->
 
-
-    <!-- Right Thruster -->
+    <!-- Port Bow -->
     <xacro:thruster_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" thruster_id="0">
-        <origin xyz="-0.53 -0.377654 -0.16" rpy="0 0 0" />
+        <origin xyz="-0.27569 0.32286 -0.29202" rpy="1.570796327 0 2.35619449" />
     </xacro:thruster_macro>
 
-    <!-- Left Thruster -->
+    <!-- Starboard Bow -->
     <xacro:thruster_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" thruster_id="1">
-        <origin xyz="-0.53 0.377654 -0.16" rpy="0 0 0" />
+        <origin xyz="0.27569 0.32286 -0.29202" rpy="1.570796327 0 -2.35619449" />
+    </xacro:thruster_macro>
+
+    <!-- Port Stern -->
+    <xacro:thruster_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" thruster_id="2">
+        <origin xyz="-0.28311 -0.31544 -0.29202" rpy="1.570796327 0 -2.35619449" />
+    </xacro:thruster_macro>
+
+    <!-- Starboard Stern -->
+    <xacro:thruster_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" thruster_id="3">
+        <origin xyz="0.28311 -0.31544 -0.29202" rpy="1.570796327 0 2.35619449" />
     </xacro:thruster_macro>
 
 </robot>

@@ -11,9 +11,7 @@
   <xacro:property name="rho" value="1000"/>
 
   <!-- Loading vehicle's specific macros -->
-  <!--
   <xacro:include filename="$(find roboboat_description)/urdf/snippets.xacro"/>
-  -->
 
   <material name="gray"><color rgba="0.7 0.7 0.7 1.0"/></material>
   <material name="dark_gray"><color rgba="0.2 0.2 0.2 1.0"/></material>
@@ -21,7 +19,6 @@
 
   <!-- Vehicle macro -->
   <xacro:macro name="roboboat_base" params="namespace *gazebo">
-
 
       <!-- Rigid body description of the base link -->
       <link name="${namespace}base_link">
@@ -52,9 +49,6 @@
           <mass value="${mass}" />
           <origin xyz="${cog}" rpy="0 0 0"/>
           <inertia ixx="10" ixy="0" iyy = "10" ixz="0" iyz="0" izz="10" />
-          <!-- <inertia ixx="0.017474" ixy="-0.000013" ixz="-0.000102"
-                                  iyy="0.017781"  iyz="-0.000058"
-                                                  izz="0.033235" /> -->
 
         </inertial>
       </link>
@@ -74,13 +68,11 @@
     <xacro:insert_block name="gazebo"/>
 
     <!-- Include the thruster modules -->
-    <!--
     <xacro:include filename="$(find roboboat_description)/urdf/actuators.xacro"/>
-    -->
     
     <!-- Include the sensor modules -->
     <xacro:include filename="$(find roboboat_description)/urdf/sensors.xacro"/>
-    
+
     <!-- Optional custom includes. -->
     <xacro:include filename="$(optenv roboboat_URDF_EXTRAS empty.urdf)" />
 
