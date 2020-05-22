@@ -172,66 +172,134 @@
       <child link="${suffix_ns}zed_${zed_id}" />
     </joint>
     
-    <gazebo reference="${suffix_ns}zed_${zed_id}">
+    <!-- Bow -->
+    <xacro:unless value="${zed_id == 0}">
+      <gazebo reference="${suffix_ns}zed_${zed_id}">
 
-      <sensor type="multicamera" name="stereo_camera">
-        <update_rate>30.0</update_rate>
+        <sensor type="multicamera" name="stereo_camera">
+          <update_rate>30.0</update_rate>
 
-        <camera name="left">
-          <horizontal_fov>1.3962634</horizontal_fov>
-          <image>
-            <width>800</width>
-            <height>800</height>
-            <format>R8G8B8</format>
-          </image>
-          <clip>
-            <near>0.02</near>
-            <far>300</far>
-          </clip>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
-          </noise>
-        </camera>
+          <camera name="left">
+            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
 
-        <camera name="right">
-          <pose>0 -0.07 0 0 0 0</pose>
-          <horizontal_fov>1.3962634</horizontal_fov>
-          <image>
-            <width>800</width>
-            <height>800</height>
-            <format>R8G8B8</format>
-          </image>
-          <clip>
-            <near>0.02</near>
-            <far>300</far>
-          </clip>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
-          </noise>
-        </camera>
+          <camera name="right">
+            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
 
-        <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>multisense_sl/camera/${zed_id}</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>left_camera_optical_frame</frameName>
-          <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
-          <hackBaseline>0.07</hackBaseline>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
-        </plugin>
+          <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>0.0</updateRate>
+            <cameraName>multisense_sl/camera/${zed_id}</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>left_camera_optical_frame</frameName>
+            <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+          </plugin>
+        </sensor>
+      </gazebo>
+    </xacro:unless>
 
-      </sensor>
-    </gazebo>
+    <!-- Stern -->
+    <xacro:unless value="${zed_id == 1}">
+      <gazebo reference="${suffix_ns}zed_${zed_id}">
+
+        <sensor type="multicamera" name="stereo_camera">
+          <update_rate>30.0</update_rate>
+
+          <camera name="left">
+            <pose>"0.07 0.33476 0.16129 0 0 0"</pose> <!-- TODO: Check this -->
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <camera name="right">
+            <pose>-0.07 0.33476 0.16129 0 0 0</pose> <!-- TODO: Check this -->
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>0.0</updateRate>
+            <cameraName>multisense_sl/camera/${zed_id}</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>left_camera_optical_frame</frameName>
+            <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+          </plugin>
+        </sensor>
+      </gazebo>
+    </xacro:unless>
+
   </xacro:macro>
 
   <xacro:macro name="lidar_macro" params="robot_namespace suffix_ns lidar_id *origin">
