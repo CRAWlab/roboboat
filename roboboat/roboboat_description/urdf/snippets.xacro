@@ -171,7 +171,7 @@
       <parent link="${suffix_ns}base_link" />
       <child link="${suffix_ns}zed_${zed_id}" />
     </joint>
-
+    
     <gazebo reference="${suffix_ns}zed_${zed_id}">
 
       <sensor type="multicamera" name="stereo_camera">

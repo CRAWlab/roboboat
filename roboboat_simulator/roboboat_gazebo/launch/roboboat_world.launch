@@ -29,6 +29,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <arg name="world_pkg_file" default="ocean_waves.launch" />
   <arg name="world_file" default="0" />
   <arg name="use_pkg_path" default="1" />
+  <arg name="gui" default="false" />
 
   <arg name="hydro_debug" default="0" />
   <arg name="config" default="base" />
@@ -41,12 +42,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
   <!-- Launch a world file using an absolute file path -->
   <group unless="$(arg use_pkg_path)">
-    <include file="$(arg world_file)" />
+    <include file="$(arg world_file)" >
+      <arg name="gui" value="$(arg gui)" />
+    </include>
   </group>
 
   <!-- Launch a world file from the launch folder of a package -->
   <group if="$(arg use_pkg_path)">
-    <include file="$(eval find(arg('world_pkg')) + '/launch/' + arg('world_pkg_file'))" />
+    <include file="$(eval find(arg('world_pkg')) + '/launch/' + arg('world_pkg_file'))" >
+      <arg name="gui" value="$(arg gui)" />
+    </include>
   </group>
 
   <!-- Start simulating a Roboboat -->
