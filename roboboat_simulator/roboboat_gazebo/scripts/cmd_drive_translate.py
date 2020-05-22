@@ -23,7 +23,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from uuv_gazebo_ros_plugins_msgs.msg import FloatStamped
-from heron_msgs.msg import Drive
+from roboboat_msgs.msg import Drive
 import rospy
 
 def cmd_drive_callback(drive):
@@ -46,7 +46,7 @@ def translate():
     namespace = rospy.get_param("~namespace", "")
 
     if namespace is "":
-        namespace = "heron"
+        namespace = "roboboat"
 
     p_left = rospy.Publisher("/" + namespace + "/thrusters/1/input", FloatStamped, queue_size=1)
     p_right = rospy.Publisher("/" + namespace + "/thrusters/0/input", FloatStamped, queue_size=1)

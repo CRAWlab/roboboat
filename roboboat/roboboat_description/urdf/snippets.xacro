@@ -217,7 +217,7 @@
         <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <cameraName>multisense_sl/camera</cameraName>
+          <cameraName>multisense_sl/camera/${zed_id}</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>left_camera_optical_frame</frameName>
@@ -310,7 +310,7 @@
           </noise>
         </ray>
         <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-          <topicName>/rrbot/laser/scan</topicName>
+          <topicName>/laser/scan/${lidar_id}</topicName>
           <frameName>hokuyo_link</frameName>
         </plugin>
       </sensor>
