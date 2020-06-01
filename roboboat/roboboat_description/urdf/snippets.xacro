@@ -173,6 +173,7 @@
     </joint>
     
     <!-- Bow -->
+    <!-- 6/1 BA: This seems to be adjusting pose of stern cameras and other xacro:unless is adjusting bow -->
     <xacro:unless value="${zed_id == 0}">
       <gazebo reference="${suffix_ns}zed_${zed_id}">
 
@@ -180,7 +181,7 @@
           <update_rate>30.0</update_rate>
 
           <camera name="left">
-            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
+            <pose>0 0 0 -1.5707963 -1.5707963 0</pose> <!-- TODO: Check this -->
             <horizontal_fov>1.3962634</horizontal_fov>
             <image>
               <width>800</width>
@@ -199,7 +200,7 @@
           </camera>
 
           <camera name="right">
-            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
+            <pose>0 0 0 -1.5707963 -1.5707963 0</pose> <!-- TODO: Check this -->
             <horizontal_fov>1.3962634</horizontal_fov>
             <image>
               <width>800</width>
@@ -244,7 +245,7 @@
           <update_rate>30.0</update_rate>
 
           <camera name="left">
-            <pose>"0.07 0.33476 0.16129 0 0 0"</pose> <!-- TODO: Check this -->
+            <pose>"0 0 0 1.5707963 -1.5707963 3.14159</pose> <!-- TODO: Check this -->
             <horizontal_fov>1.3962634</horizontal_fov>
             <image>
               <width>800</width>
@@ -263,7 +264,7 @@
           </camera>
 
           <camera name="right">
-            <pose>-0.07 0.33476 0.16129 0 0 0</pose> <!-- TODO: Check this -->
+            <pose>0 0 0 1.5707963 -1.5707963 3.14159</pose> <!-- TODO: Check this -->
             <horizontal_fov>1.3962634</horizontal_fov>
             <image>
               <width>800</width>
@@ -276,7 +277,7 @@
             </clip>
             <noise>
               <type>gaussian</type>
-              <mean>0.0</mean>
+              <mean>0`.0</mean>
               <stddev>0.007</stddev>
             </noise>
           </camera>

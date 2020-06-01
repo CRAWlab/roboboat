@@ -26,17 +26,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 <launch>
 
   <arg name="world_pkg" default="uuv_gazebo_worlds" />
-  <arg name="world_pkg_file" default="ocean_waves.launch" />
+  <arg name="world_pkg_file" default="ocean_waves.launch" />  <!-- ocean_waves.launch, lake.launch -->
+  <arg name="world" default="$(find vrx_gazebo)/worlds/example_course.world" /> <!-- This is for VRX -->
   <arg name="world_file" default="0" />
   <arg name="use_pkg_path" default="1" />
   <arg name="gui" default="false" />
 
   <arg name="hydro_debug" default="0" />
   <arg name="config" default="base" />
-
-  <arg name="x"     default="0"/>
-  <arg name="y"     default="0"/>
-  <arg name="yaw"   default="0"/>
 
   <arg name="namespace" default="" />
 
@@ -47,18 +44,23 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </include>
   </group>
 
+  <!-- This is for UUV -->
   <!-- Launch a world file from the launch folder of a package -->
-  <group if="$(arg use_pkg_path)">
-    <include file="$(eval find(arg('world_pkg')) + '/launch/' + arg('world_pkg_file'))" >
+<!--   <group if="$(arg use_pkg_path)">
+    <include file="$(eval find(arg('world_pkg')) + '/launch' + arg('world_pkg_file'))" >
       <arg name="gui" value="$(arg gui)" />
     </include>
-  </group>
+  </group> -->
+
+<!-- Start Gazebo with the world file --> <!-- VRX -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name"   value="$(arg world)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui"          value="$(arg gui)" />
+  </include>
 
   <!-- Start simulating a Roboboat -->
   <include file="$(find roboboat_gazebo)/launch/roboboat_sim.launch">
-    <arg name="x" value="$(arg x)" />
-    <arg name="y" value="$(arg y)" />
-    <arg name="yaw" value="$(arg yaw)" />
     <arg name="namespace" value="$(arg namespace)" />
   </include>
 
