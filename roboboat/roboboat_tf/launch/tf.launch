@@ -1,0 +1,52 @@
+<launch>
+
+	<!-- ZEDs -->
+	<!-- base_link to bow_zed (0) -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed" args="0.295 0 0.18 0 0 0 /base_link /bow/zed_camera_center 10" />
+
+	<!-- base_link to stern_zed (1) -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed" args="-0.295 0 0.18 0 0 3.14159 /base_link /stern/zed_camera_center 10" />
+
+	<!-- TODO: Check this tf -->
+	<!-- base_link to bow_zed_left_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed_left" args="0 0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_left_lens 10" />
+
+	<!-- TODO: Check this tf -->
+	<!-- base_link to bow_zed_right_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed_right" args="0 -0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_right_lens 10" />
+
+	<!-- TODO: Check this tf -->
+	<!-- base_link to stern_zed_left_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed_left" args="0 0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_left_lens 10" />
+
+	<!-- TODO: Check this tf -->
+	<!-- base_link to stern_zed_right_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed_right" args="0 -0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_right_lens 10" />
+
+
+	<!-- LiDARs -->
+	<!-- base_link to bow_lidar (0) -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_laser" args="0.41 0 0.065 0 0 0 /base_link /bow/laser 10" />
+
+	<!-- base_link to stern_lidar (1) -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_laser" args="-0.41 0 0.065 0 0 3.14159 /base_link /stern/laser 10" />
+
+	<!-- IMU -->
+	<!-- base_link to IMU -->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_imu" args="0 0 0 0 0 0 /base_link /imu_link 10" />
+	
+	<!-- GPS -->
+	<!-- base_link to GPS-->
+	<node pkg="tf" type="static_transform_publisher" name="base_link_to_gps" args="-0.35 -0.255 0.385 0 0 0 /base_link /gps_link 10" />
+
+	<!-- Motors -->
+	
+	<!-- base_link to port_bow (0,0) -->
+
+	<!-- base_link to port_stern (1,0) -->
+
+	<!-- base_link to starboard_bow (0,1) -->
+
+	<!-- base_link to starboard_stern (1,1) -->
+
+</launch>

@@ -7,22 +7,22 @@ subscribers:
 actions:
 
   camera_reading:
-    name: /darknet_ros/check_for_objects
+    name: /bow/darknet_ros/check_for_objects
 
 publishers:
 
   object_detector:
-    topic: /darknet_ros/found_object
+    topic: /bow/darknet_ros/found_object
     queue_size: 1
     latch: false
 
   bounding_boxes:
-    topic: /darknet_ros/bounding_boxes
+    topic: /bow/darknet_ros/bounding_boxes
     queue_size: 1
     latch: false
 
   detection_image:
-    topic: /darknet_ros/detection_image
+    topic: /bow/darknet_ros/detection_image
     queue_size: 1
     latch: true
 
