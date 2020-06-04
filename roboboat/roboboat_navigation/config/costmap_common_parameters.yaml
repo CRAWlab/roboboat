@@ -1,7 +1,7 @@
 footprint: [[-0.75, -0.43], [-0.75, 0.43], [0.75, 0.43], [0.75, -0.43]]
 footprint_padding: 0.01
 
-obstacle_range: 5.0 # Maximum range to consider (m)
+obstacle_range: 10.0 # Maximum range to consider (m)
 raytrace_range: 1.0  # Minimum range to consider? (m) 
 
 resolution: 0.05     # Map resolution in m
@@ -14,11 +14,11 @@ obstacles_laser:
     bow_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/0, inf_is_valid: true}
     stern_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/0, inf_is_valid: true}
 
-# TODO: Set up a pointcloud in Gazebo  
-# obstacles_pointcount:
-#     observation_sources: zed_point_cloud
-#     zed_point_cloud: {data_type: PointCloud, topic: zed/zed_node/point_could/cloud_registered, marking: true, clearing: true}
-#     # may need to add sensor_frame: frame_name, above
+obstacles_pointcount:
+    observation_sources: bow_point_cloud stern_point_cloud
+    bow_point_cloud: {data_type: PointCloud2, topic: /bowPoints/depth/points, marking: true, clearing: true}
+    stern_point_cloud: {data_type: PointCloud2, topic: /sternPoints/depth/points, marking: true, clearing: true}
+    # may need to add sensor_frame: frame_name, above
 
 #layer definitions
 static:

@@ -1,0 +1,33 @@
+TrajectoryPlannerROS:
+
+  # Forward Velocity limits
+  max_vel_x: 1.0
+  min_vel_x: 0.1
+
+  # Transverse Velocity limits
+  max_vel_y: 0.75
+  min_vel_y: 0.1
+
+  # Angular Velocity limits
+  max_vel_theta: 0.5
+  min_vel_theta: 0.1
+
+  # Reverse Velocity
+  escape_vel: 0.25
+
+  # Angular velocity in place
+  min_in_place_vel_theta: 0.1
+
+  # Acceleration limits
+  acc_lim_theta: 3.2
+  acc_lim_x: 2.5
+  acc_lim_y: 2.5
+
+  # Holonomic (bool)
+  holonomic_robot: true
+
+  # Amount of time to forward-simulate trajectories (s)
+  # BA: Convert to MPC horizon?
+  sim_time: 1.0
+
+  controller_frequency: 20 # (Hz)

@@ -181,7 +181,7 @@
 
           <camera name="left">
             <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -200,7 +200,7 @@
 
           <camera name="right">
             <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -238,7 +238,8 @@
           <update_rate>20</update_rate>
 
           <camera>
-            <horizontal_fov>1.047198</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <!-- <pose>0 0 0 0 0 0</pose> -->
             <image>
               <width>640</width>
               <height>480</height>
@@ -287,7 +288,7 @@
 
           <camera name="left">
             <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -306,7 +307,7 @@
 
           <camera name="right">
             <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -344,7 +345,8 @@
           <update_rate>20</update_rate>
 
           <camera>
-            <horizontal_fov>1.047198</horizontal_fov>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <!-- <pose>0 0 0 0 0 0</pose> -->
             <image>
               <width>640</width>
               <height>480</height>

@@ -1,0 +1,23 @@
+<launch>
+
+	<!-- Is this handled by RTabMap? -->
+	<master auto="start"/>
+
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find roboboat_mapping)/my_map.pgm my_map_resolution" />
+
+	<!-- Include AMCL for localization -->
+	<include file="$(find roboboat_navigation)/launch/amcl.launch" />
+
+	<!-- Include move_base -->
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="local_costmap" />
+		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="global_costmap" />
+
+		<!-- BA: Why do we/do we need both of these sets of rosparams? -->
+		<rosparam file="$(find roboboat_navigation)/config/local_costmap_parameters.yaml" command="load" />
+		<rosparam file="$(find roboboat_navigation)/config/global_costmap_parameters.yaml" command="load" />
+
+		<!-- Local Planner Parameters -->
+		<rosparam file="$(find roboboat_navigation)/config/base_local_planner_parameters.yaml" command="load" />
+	</node>
+</launch>
