@@ -8,7 +8,10 @@
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
   <maintainer email="crawlab@todo.todo">crawlab</maintainer>
+<<<<<<< HEAD
   <author email="benarmentor@gmail.com">Benjamin Armentor</author>
+=======
+>>>>>>> origin/dev
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -35,10 +38,15 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <!--   <depend>roscpp</depend> -->
   <!--   Note that this is equivalent to the following: -->
+<<<<<<< HEAD
   <build_depend>rospy</build_depend>
   <exec_depend>rospy</exec_depend>
   <build_depend>robot_localization</build_depend>
   <exec_depend>robot_localization</exec_depend>
+=======
+  <!--   <build_depend>roscpp</build_depend> -->
+  <!--   <exec_depend>roscpp</exec_depend> -->
+>>>>>>> origin/dev
   <!-- Use build_depend for packages you need at compile time: -->
   <!--   <build_depend>message_generation</build_depend> -->
   <!-- Use build_export_depend for packages you need in order to build against this package: -->
