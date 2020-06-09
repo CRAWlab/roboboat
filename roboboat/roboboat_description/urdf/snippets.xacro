@@ -173,15 +173,15 @@
     </joint>
     
     <!-- Bow -->
-    <xacro:unless value="${zed_id == 0}">
+    <xacro:if value="${zed_id == 0}">
       <gazebo reference="${suffix_ns}zed_${zed_id}">
 
         <sensor type="multicamera" name="stereo_camera">
           <update_rate>30.0</update_rate>
 
           <camera name="left">
-            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -199,8 +199,8 @@
           </camera>
 
           <camera name="right">
-            <pose>-0.07 0.33476 0.16129 0 0 -3.14159</pose> <!-- TODO: Check this -->
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -233,19 +233,62 @@
             <distortionT2>0.0</distortionT2>
           </plugin>
         </sensor>
+
+        <sensor name="bowPoints_camera" type="depth">
+          <update_rate>20</update_rate>
+
+          <camera>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <!-- <pose>0 0 0 0 0 0</pose> -->
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>3</far>
+            </clip>
+          </camera>
+
+          <plugin name="bowPoints_controller" filename="libgazebo_ros_openni_kinect.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>1.0</updateRate>
+            <cameraName>bowPoints_ir</cameraName>
+            <imageTopicName>/bowPoints/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/bowPoints/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/bowPoints/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/bowPoints/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/bowPoints/depth/points</pointCloudTopicName>
+            <frameName>bowPoints</frameName>
+            <pointCloudCutoff>0.5</pointCloudCutoff>
+            <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+          </plugin>
+        </sensor>
       </gazebo>
-    </xacro:unless>
+    </xacro:if>
 
     <!-- Stern -->
-    <xacro:unless value="${zed_id == 1}">
+    <xacro:if value="${zed_id == 1}">
       <gazebo reference="${suffix_ns}zed_${zed_id}">
 
         <sensor type="multicamera" name="stereo_camera">
           <update_rate>30.0</update_rate>
 
           <camera name="left">
-            <pose>"0.07 0.33476 0.16129 0 0 0"</pose> <!-- TODO: Check this -->
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -263,8 +306,8 @@
           </camera>
 
           <camera name="right">
-            <pose>-0.07 0.33476 0.16129 0 0 0</pose> <!-- TODO: Check this -->
-            <horizontal_fov>1.3962634</horizontal_fov>
+            <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
             <image>
               <width>800</width>
               <height>800</height>
@@ -297,8 +340,52 @@
             <distortionT2>0.0</distortionT2>
           </plugin>
         </sensor>
+
+        <sensor name="sternPoints_camera" type="depth">
+          <update_rate>20</update_rate>
+
+          <camera>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <!-- <pose>0 0 0 0 0 0</pose> -->
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>3</far>
+            </clip>
+          </camera>
+
+          <plugin name="sternPoints_controller" filename="libgazebo_ros_openni_kinect.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>1.0</updateRate>
+            <cameraName>sternPoints</cameraName>
+            <imageTopicName>/sternPoints/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/sternPoints/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/sternPoints/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/sternPoints/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/sternPoints/depth/points</pointCloudTopicName>
+            <frameName>sternPoints</frameName>
+            <pointCloudCutoff>0.5</pointCloudCutoff>
+            <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+          </plugin>
+        </sensor>
+
       </gazebo>
-    </xacro:unless>
+    </xacro:if>
 
   </xacro:macro>
 

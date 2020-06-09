@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>roboboat_msgs</name>
-  <version>0.3.2</version>
+  <version>0.0.1</version>
   <description>
-    Provides standard messages specific to Roboboat, especially for 
-    the microcontroller's rosserial interface.
+    Provides standard messages specific to Roboboat.
   </description>
-  <maintainer email="mpurvis@clearpathrobotics.com">Mike Purvis</maintainer>
-  <license>BSD</license>
+  <maintainer email="crawlab@todo.todo">crawlab</maintainer>
+  <author email="benarmentor@gmail.com">Benjamin Armentor</author>
 
+  <license>TODO</license>
+  
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>std_msgs</build_depend>
+  
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 

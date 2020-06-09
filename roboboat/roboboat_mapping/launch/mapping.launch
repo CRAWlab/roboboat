@@ -1,0 +1,153 @@
+<launch>
+
+	<!-- Stereo Mapping -->
+	<!-- Image Rectification -->
+	<group ns="bow/zed" >
+
+		<node pkg="nodelet" type="nodelet" name="stereo_nodelet" args="manager" />
+
+		<node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
+			<remap from="left/image_raw" to="/multisense_sl/camera/0/left/image_raw" />
+			<remap from="left/camera_info" to="/multisense_sl/camera/0/left/camera_info" />
+			<remap from="right/image_raw" to="/multisense_sl/camera/0/right/image_raw" />
+			<remap from="right/camera_info" to="/multisense_sl/camera/0/right/camera_info" />
+			<param name="disparity_range" value="128" />
+		</node>
+
+	</group>
+
+	<group ns="stern/zed" >
+
+		<node pkg="nodelet" type="nodelet" name="stereo_nodelet" args="manager" />
+
+		<node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
+			<remap from="left/image_raw" to="/multisense_sl/camera/1/left/image_raw" />
+			<remap from="left/camera_info" to="/multisense_sl/camera/1/left/camera_info" />
+			<remap from="right/image_raw" to="/multisense_sl/camera/1/right/image_raw" />
+			<remap from="right/camera_info" to="/multisense_sl/camera/1/right/camera_info" />
+			<param name="disparity_range" value="128" />
+		</node>
+
+	</group>
+
+	<group ns="bow" >
+
+		<!-- Stereo Odometry -->
+		<node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" output="screen" >
+			<remap from="left/image_rect" to="/zed/left/image_rect" />
+			<remap from="right/image_rect" to="/zed/right/image_rect" />
+			<remap from="left/camera_info" to="/zed/left/camera_info" />
+			<remap from="right/camera_info" to="/zed/right/camera_info" />
+			<remap from="odom" to="/stereo_odometry" />
+
+			<param name="frame_id" type="string" value="base_footprint" />
+			<param name="odom_frame_id" type="string" value="odom" />
+
+			<param name="Vis/Strategy" type="string" value="0" /> <!-- 0 = BOW, 1 = OpticalFlow -->
+			<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+			<param name="Vis/MinInliers" type="string" value="10" />
+			<param name="Vis/RoiRatios" type="string" value="0.03  0.03 0.04 0.04" />
+			<param name="Vis/MaxDepth" type="string" value="10" />
+			<param name="VisBow/NNDR" type="string" value="0.8" />
+			<param name="Vis/MaxFeatures" type="string" value="1000" />
+			<param name="Vis/FillInfoData" type="string" value="false" />
+			<param name="GFTT/MinDistance" type="string" value="10" />
+			<param name="GFTT/QualityLevel" type="string" value="0.00001" />
+		</node>
+
+		<!-- Visual SLAM: args: "delete_db_on_start" and "udebug" -->
+		<node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start" >
+			<param name="frame_id" type="string" value="base_footprint" />
+			<param name="subscribe_stereo" type="bool" value="true" />
+			<param name="subscribe_depth" type="bool" value="false" />
+
+			<!-- I think namespace will take effect here -->
+			<remap from="left/image_rect" to="/zed/left/image_rect_color" />
+			<remap from="right/image_rect" to="/zed/left/image_rect/" />
+			<remap from="left/camera_info" to="/zed/left_camera_info" />
+			<remap from="right/camera_info" to="/zed/right_camera_info" />
+
+			<remap from="odom" to="/stereo_odometry" />
+
+			<param name="queue_size" type="int" value="30" />
+
+			<!-- RTAB-Map's parameters -->
+			<param name="Rtabmap/TimeThr" type="string" value="700" />
+			<param name="Rtabmap/DetectionRate" type="string" value="1" />
+
+			<param name="Kp/RoiRatios" type="string" value="0.03 0.03 0.04 0.04" />
+			<param name="Kp/DetectorStrategy" type="string" value="0" /> <!-- Use SURF -->
+			<param name="Kp/NNStrategy" type="string" value="1" />
+
+			<param name="SURF/HessianThreshold" type="string" value="1000" />
+
+			<param name="Vis/MinInliers" type="string" value="10" />
+			<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+
+			<param name="RGBD/LoopClosureReextractFeatures" type="string" value="true" />
+			<param name="Vis/MaxFeatures" type="string" value="500" />
+			<param name="Vis/MaxDepth" type="string" value="10" />
+		</node>
+	</group>
+
+	<group ns="stern" >
+
+		<!-- Stereo Odometry -->
+		<node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" output="screen" >
+			<remap from="left/image_rect" to="/zed/left/image_rect" />
+			<remap from="right/image_rect" to="/zed/right/image_rect" />
+			<remap from="left/camera_info" to="/zed/left/camera_info" />
+			<remap from="right/camera_info" to="/zed/right/camera_info" />
+			<remap from="odom" to="/stereo_odometry" />
+
+			<param name="frame_id" type="string" value="base_footprint" />
+			<param name="odom_frame_id" type="string" value="odom" />
+
+			<param name="Vis/Strategy" type="string" value="0" /> <!-- 0 = BOW, 1 = OpticalFlow -->
+			<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+			<param name="Vis/MinInliers" type="string" value="10" />
+			<param name="Vis/RoiRatios" type="string" value="0.03  0.03 0.04 0.04" />
+			<param name="Vis/MaxDepth" type="string" value="10" />
+			<param name="VisBow/NNDR" type="string" value="0.8" />
+			<param name="Vis/MaxFeatures" type="string" value="1000" />
+			<param name="Vis/FillInfoData" type="string" value="false" />
+			<param name="GFTT/MinDistance" type="string" value="10" />
+			<param name="GFTT/QualityLevel" type="string" value="0.00001" />
+		</node>
+
+		<!-- Visual SLAM: args: "delete_db_on_start" and "udebug" -->
+		<node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start" >
+			<param name="frame_id" type="string" value="base_footprint" />
+			<param name="subscribe_stereo" type="bool" value="true" />
+			<param name="subscribe_depth" type="bool" value="false" />
+
+			<!-- I think namespace will take effect here -->
+			<remap from="left/image_rect" to="/zed/left/image_rect_color" />
+			<remap from="right/image_rect" to="/zed/left/image_rect/" />
+			<remap from="left/camera_info" to="/zed/left_camera_info" />
+			<remap from="right/camera_info" to="/zed/right_camera_info" />
+
+			<remap from="odom" to="/stereo_odometry" />
+
+			<param name="queue_size" type="int" value="30" />
+
+			<!-- RTAB-Map's parameters -->
+			<param name="Rtabmap/TimeThr" type="string" value="700" />
+			<param name="Rtabmap/DetectionRate" type="string" value="1" />
+
+			<param name="Kp/RoiRatios" type="string" value="0.03 0.03 0.04 0.04" />
+			<param name="Kp/DetectorStrategy" type="string" value="0" /> <!-- Use SURF -->
+			<param name="Kp/NNStrategy" type="string" value="1" />
+
+			<param name="SURF/HessianThreshold" type="string" value="1000" />
+
+			<param name="Vis/MinInliers" type="string" value="10" />
+			<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+
+			<param name="RGBD/LoopClosureReextractFeatures" type="string" value="true" />
+			<param name="Vis/MaxFeatures" type="string" value="500" />
+			<param name="Vis/MaxDepth" type="string" value="10" />
+		</node>
+	</group>
+
+</launch>
