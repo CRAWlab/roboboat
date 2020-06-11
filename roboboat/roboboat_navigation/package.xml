@@ -8,10 +8,7 @@
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
   <maintainer email="crawlab@todo.todo">crawlab</maintainer>
-<<<<<<< HEAD
   <author email="benarmentor@gmail.com">Benjamin Armentor</author>
-=======
->>>>>>> origin/dev
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -55,14 +52,11 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>move_base</build_depend>
   <build_export_depend>move_base</build_export_depend>
-<<<<<<< HEAD
   <build_depend>rtabmap</build_depend>
   <build_depend>rtabmap_ros</build_depend>
 
   <exec_depend>rtabmap</exec_depend>
   <exec_depend>rtabmap_ros</exec_depend>
-=======
->>>>>>> origin/dev
   <exec_depend>move_base</exec_depend>
 
 

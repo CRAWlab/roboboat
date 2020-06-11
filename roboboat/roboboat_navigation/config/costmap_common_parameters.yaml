@@ -22,5 +22,5 @@ obstacles_pointcount:
 
 #layer definitions
 static:
-    map_topic: /map
+    map_topic: map
     subscribe_to_updates: true

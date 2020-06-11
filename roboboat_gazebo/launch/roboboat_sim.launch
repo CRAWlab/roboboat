@@ -95,32 +95,28 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Start up darknet_ros YOLO object detection nodes -->
   <!-- Bow ZED -->
   <!-- Not sure if this image_raw from Gazebo is RGB or not -->
-<!--   <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="bow" >
+  <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="bow" >
     <arg name="launch_prefix" default=""/>
-    <arg name="image" default="/camera/rgb/image_raw" /> -->
+    <arg name="image" default="/camera/rgb/image_raw" />
       <!-- Config and weights folder. -->
-<!--     <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
-    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/> -->
+    <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
+    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
     <!-- ROS and network parameter files -->
-<!--     <arg name="ros_param_file"             default="$(find darknet_ros)/config/bow_ros.yaml"/>
+    <arg name="ros_param_file"             default="$(find darknet_ros)/config/bow_ros.yaml"/>
     <arg name="network_param_file"         default="$(find darknet_ros)/config/yolov3.yaml"/>
-  </include> -->
+  </include>
 
   <!-- Stern ZED -->
-<!--   <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="stern" >
+  <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="stern" >
     <arg name="launch_prefix" default=""/>
-    <arg name="image" default="/camera/rgb/image_raw" /> -->
+    <arg name="image" default="/camera/rgb/image_raw" />
       <!-- Config and weights folder. -->
-<!--     <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
-    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/> -->
+    <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
+    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
     <!-- ROS and network parameter files -->
-<!--     <arg name="ros_param_file"             default="$(find darknet_ros)/config/stern_ros.yaml"/>
+    <arg name="ros_param_file"             default="$(find darknet_ros)/config/stern_ros.yaml"/>
     <arg name="network_param_file"         default="$(find darknet_ros)/config/yolov3.yaml"/>
 
-<<<<<<< HEAD:roboboat_gazebo/launch/roboboat_sim.launch
   </include>
-=======
-  </include> -->
->>>>>>> origin/dev:roboboat_gazebo/launch/roboboat_sim.launch
 
 </launch>
