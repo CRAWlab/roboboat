@@ -110,14 +110,14 @@ int main(int argc, char **argv)
     ros::Subscriber thrust_sub = n.subscribe("control/thrustSolution", 10, thrust_callback);
 
     /// Define the system parameters that can be assumed to be constant
-    const double M = 1.0; // System Mass (kg)
+    const double M = 34.755; // System Mass (kg). Estimated from old weight from 2019 report + 26 lbs (new enclosure weight) - 5 lbs (approx old enclosure weight)
     const double I_ZZ = 1.0; // Moment of Inertia about body-fixed Z axis (kg*m)
-    const double L_WL = 1.0; // Longitudinal length of hull touching water, waterline length (m)
-    const double L_OA = 1.0; // Total longitudinal length of the vessel (m)
-    const double L_CG = 1.0; // Longitudinal distance from CoG to thrusters (m)
-    const double B = 1.0; // Beam width of the vessel (Center-to-Center of hulls, (m))
-    const double B_H = 1.0; // Beam width of each pontoon hull (m)
-    const double T = 1.0; // Draft of the vessel (submerged depth, (m))
+    const double L_WL = 1.27; // Longitudinal length of hull touching water, waterline length (m). Estimated based on new draft. Current is 48.126 in from CAD. Rounding to 50 with increased draft.
+    const double L_OA = 1.524; // Total longitudinal length of the vessel (m)
+    const double L_CG = 0.319151; // Longitudinal distance from CoG to thrusters (m). "b" parameter in RoboBoat FBD
+    const double B = 0.5588; // Beam width of the vessel (Center-to-Center of hulls, (m))
+    const double B_H = 0.22352; // Beam width of each pontoon hull (m). @ waterline length. Estimated as 8.8 in. Current is 8.644 with old draft.
+    const double T = 0.127; // Draft of the vessel (submerged depth, (m)). Esimated as 5" -- 20% increase from current, based on 2019 report.
     const double X_UDOT = -0.05 * M; // Hydrodynamic added mass in surge due to surge motion (kg)
     const double Y_VDOT = -0.9 * M_PI * RHO_H2O * (pow(T, 2)) * L_WL; // Hydrodynamic added mass in sway due to sway motion (kg)
     const double N_RDOT = -1.2 * ((4.75/2) * M_PI * RHO_H2O * (B/2) * (pow(T, 4)) + M_PI * RHO_H2O * (pow(T, 2)) * ((pow(L_WL - L_CG, 3) + pow(L_CG, 3)))/3 ); // Hydrodynamic added mass in yaw due to angular motion (kg*m)
@@ -133,9 +133,9 @@ int main(int argc, char **argv)
     const double N_RR = RHO_H2O * T * (C_D/4) * (pow(L_WL - L_CG, 4) - pow(L_CG, 4)); // Nonlinear drag term in yaw due to yaw motion
     const double PHI = M_PI/4; // Motor orientation angle (rad)
     const double MIN_THRUST = -4.07 * GRAV; // Minimum thrust (reverse, 16V, (N))
-    const double MAX_THRUST = 5.18 * GRAV; // Maximum thrust (forward, 16V, (N))
-    const double A_FW = 1.0; // Frontal windage area (m^2)
-    const double A_LW = 1.0; // Longitudinal windage area (m^2)
+    const double MAX_THRUST = 5.25 * GRAV; // Maximum thrust (forward, 16V, (N))
+    const double A_FW = 1.0; // Frontal windage area (m^2). CURRENTLY NOT USED.
+    const double A_LW = 1.0; // Longitudinal windage area (m^2). CURRENTLY NOT USED.
 
     // Still need to define hydrodynamic drag terms (X_u, X_uu, Y_v, N_v, N_r, Y_r)
     // Some of these are non-constant because of velocity dependence
@@ -289,9 +289,9 @@ int main(int argc, char **argv)
         RealTimeAlgorithm alg(ocp, 0.05);
         alg.set(MAX_NUM_ITERATIONS, 10);
         
+        // BA: What do these zero references do? Are they part of C++ or ACADO? I can't find any info.
         StaticReferenceTrajectory zeroReference;
-
-        
+ 
         Controller controller(alg, zeroReference);
 
         // Set up the simulation environment and run it.
