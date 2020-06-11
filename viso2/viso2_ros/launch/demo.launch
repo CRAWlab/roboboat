@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="camera" default="/image"/>
+
+  <!-- Run the stereo image proc -->
+  <node ns="$(arg camera)" pkg="image_proc" type="image_proc" name="image_proc" />
+
+  <!-- Viso2 -->
+  <node pkg="viso2_ros" type="mono_odometer" name="mono_odometer">
+    <remap from="image" to="$(arg camera)/image_rect"/>
+    <param name="base_link_frame_id" value="$(arg camera)"/>
+
+    <param name="camera_height" value="1.00" />
+    <param name="camera_pitch"  value="0.00" />
+  </node>
+
+</launch>
