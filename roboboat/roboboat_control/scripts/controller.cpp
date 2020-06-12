@@ -32,11 +32,12 @@ TODO:
 #include <acado_toolkit.hpp>
 #include <acado_gnuplot.hpp>
 
-#include "ros/ros.h"
-#include "geometry_msgs/Twist.h"
-#include "nav_msgs/Odometry.h"
-#include "roboboat_msgs/msg/MotorCommandStamped.h"
-#include "tf/transformations/euler_from_quaternion.h" // BA: Is this right?
+#include <"ros/ros.h">
+#include <"geometry_msgs/Twist.h">
+#include <"nav_msgs/Odometry.h">
+#include <"roboboat_msgs/msg/MotorCommandStamped.h">
+#include <"tf/transformations/euler_from_quaternion.h"> // BA: Is this right?
+#include <"tf/transform_listener.h">
 
 // Define namespaces
 using namespace std;
@@ -110,14 +111,15 @@ int main(int argc, char **argv)
     ros::Subscriber thrust_sub = n.subscribe("control/thrustSolution", 10, thrust_callback);
 
     /// Define the system parameters that can be assumed to be constant
-    const double M = 34.755; // System Mass (kg). Estimated from old weight from 2019 report + 26 lbs (new enclosure weight) - 5 lbs (approx old enclosure weight)
-    const double I_ZZ = 1.0; // Moment of Inertia about body-fixed Z axis (kg*m)
-    const double L_WL = 1.27; // Longitudinal length of hull touching water, waterline length (m). Estimated based on new draft. Current is 48.126 in from CAD. Rounding to 50 with increased draft.
+    const double M = 32.042; // System Mass (kg). Estimated from old weight from 2019 report + 26 lbs (new enclosure weight) - 11 lbs (approx old enclosure weight)
+    const double I_ZZ = 2.987; // Moment of Inert
+    ia about body-fixed Z axis (kg*m). A few estimates from CAD. Includes enclosure, bridge, 2 pontoons.
+    const double L_WL = 1.2827; // Longitudinal length of hull touching water, waterline length (m). Estimated based on new draft. Current is 48.126 in from CAD. Rounding to 50 with increased draft.
     const double L_OA = 1.524; // Total longitudinal length of the vessel (m)
     const double L_CG = 0.319151; // Longitudinal distance from CoG to thrusters (m). "b" parameter in RoboBoat FBD
     const double B = 0.5588; // Beam width of the vessel (Center-to-Center of hulls, (m))
-    const double B_H = 0.22352; // Beam width of each pontoon hull (m). @ waterline length. Estimated as 8.8 in. Current is 8.644 with old draft.
-    const double T = 0.127; // Draft of the vessel (submerged depth, (m)). Esimated as 5" -- 20% increase from current, based on 2019 report.
+    const double B_H = 0.2351; // Beam width of each pontoon hull (m). @ waterline length. Estimated as 8.8 in. Current is 8.644 with old draft.
+    const double T = 0.1214; // Draft of the vessel (submerged depth, (m)). Esimated as 5" -- 20% increase from current, based on 2019 report.
     const double X_UDOT = -0.05 * M; // Hydrodynamic added mass in surge due to surge motion (kg)
     const double Y_VDOT = -0.9 * M_PI * RHO_H2O * (pow(T, 2)) * L_WL; // Hydrodynamic added mass in sway due to sway motion (kg)
     const double N_RDOT = -1.2 * ((4.75/2) * M_PI * RHO_H2O * (B/2) * (pow(T, 4)) + M_PI * RHO_H2O * (pow(T, 2)) * ((pow(L_WL - L_CG, 3) + pow(L_CG, 3)))/3 ); // Hydrodynamic added mass in yaw due to angular motion (kg*m)
@@ -211,9 +213,33 @@ int main(int argc, char **argv)
 
     double seq = 0;
 
+    // Define a transform listener
+    tf::TransformListener odom_to_baselink;
+
     // While roscore is running:
     while (ros::ok())
     {   
+        // Transform the odom message to base_link position and velocity
+        // Create a transform container
+        tf::StampedTransform curr_transform;
+
+        // Perform the transformation, store in curr_transform
+        try
+        {
+            odom_to_baselink.lookupTransform("/odom", "/base_link", ros::Time(0), curr_transform);
+        }
+
+        catch (tf::TransformException ex)
+        {
+            ROS_ERROR("%s",ex.what());
+            // There was a sleep here for 1 second.. We should avoid that. Not sure the penalty of doing so.
+        }
+
+        // Need to figure out how to access the fields of this curr_transform -- can't find any documentation on message fields of StampedTransform
+        // TODO: Rotate the values after accessing the fields of curr_transform
+        // TODO: Adjust total_vel to be based on the rotated values
+        // TODO: Ensure position updates properly by supplying the translational offset provided by the transform. Seems okay based on `rosrun tf tf_echo /odom /base_link`
+        
         // Calculate the total translational velocity
         double total_vel = sqrt(pow(OdomMsg.twist.twist.linear.x, 2) + pow(OdomMsg.twist.twist.linear.y, 2))
 
