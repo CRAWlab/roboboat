@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
 
-roboboatMPC.cpp
+controller.cpp
 
 Acado toolkit MPC setup for the CRAWLab RoboBoat.
 
@@ -24,20 +24,19 @@ TODO:
         6) X_udot, Y_vdot, Y_rdot, N_vdot, N_rdot (following form of WAM-V)
         7) T (currently using submerged depth approximation, but with old enclosure)
    * Estimate A_fw and A_lw from CAD
-   * Prescribe controller initialization as last thrust message from OCP solution.
-   * Figure out how to get result from ACADO to assign to fields of MotorMsg?
+   * Find substitute for tf/transformations/euler_from_quaternion
 ---------------------------------------------------------------------------- */
 
-// Import certain header files and messages
+// Import certain header files and message definitions
 #include <acado_toolkit.hpp>
 #include <acado_gnuplot.hpp>
 
-#include <"ros/ros.h">
-#include <"geometry_msgs/Twist.h">
-#include <"nav_msgs/Odometry.h">
-#include <"roboboat_msgs/msg/MotorCommandStamped.h">
-#include <"tf/transformations/euler_from_quaternion.h"> // BA: Is this right?
-#include <"tf/transform_listener.h">
+#include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
+#include <roboboat_msgs/MotorCommandStamped.h>
+// #include <tf/transformations/euler_from_quaternion.h> // BA: Need to find a substitute for this.
+#include <tf/transform_listener.h> // BA: Should this be tf or tf2_ros?
 
 // Define namespaces
 using namespace std;
@@ -46,6 +45,7 @@ USING_NAMESPACE_ACADO
 
 // Define message containers as global scope
 geometry_msgs::Twist CmdVelMsg; // Velocity commands from base_local_planner
+geometry_msgs::Twist TwistMsg; // Current velocity, to be filled from a transformation from /odom to base_link
 nav_msgs::Odometry OdomMsg;
 roboboat_msgs::MotorCommandStamped MotorCommandMsg;  // Motor thrust to command
 roboboat_msgs::MotorCommandStamped PrevThrustMsg; // Previous thrust command
@@ -60,26 +60,39 @@ const double C_Y_WIND = 0.825; // Wind drag coefficient in sway, recommended to 
 const double C_Z_WIND = 0.125; // Wind drag coefficient in yaw, recommended to be in [0.05, 0.20]
 const double MPS_TO_KNOT = 1.944; // Multiply (m/s) by this to get (knots)
 const double KNOT_TO_MPS = 1 / MPS_TO_KNOT; // Multiply (knots) by this to get (m/s)
+const double LOOP_FREQ = 10; // Loop frequency (Hz)
 
 // Define a callback function for the Twist messages on "/cmd_vel"
-void traj_callback(const geometry_msgs::Twist::ConstPtr& msg)
+void traj_callback(const geometry_msgs::Twist msg)
 {
     // Assign and return the message
-    CmdVelMsg = msg;
+    // TODO: Find a better way to clean this up
+    CmdVelMsg.linear.x = msg.linear.x;
+    CmdVelMsg.linear.y = msg.linear.y;
+    CmdVelMsg.angular.z = msg.angular.z;
+
     return;
 }
 
 // Define a callback function for the current odometry information on "/odometry/filtered"
-void odom_callback(const nav_msgs::Odometry::ConstPtr& msg)
+void odom_callback(const nav_msgs::Odometry msg)
 {
-    OdomMsg = msg;
+    // Assign and return the message
+    // TODO: Find a better way to clean this up
+    OdomMsg.pose = msg.pose;
+    OdomMsg.twist = msg.twist;
     return;
 }
 
 // Define a callback function for the previous thrust output on "/control/thrustSolution"
-void thrust_callback(const roboboat_msgs::MotorCommandStamped::ConstPtr& msg)
-{
-    PrevThrustMsg = msg;
+void thrust_callback(const roboboat_msgs::MotorCommandStamped msg)
+{   
+    // Assign and return the message
+    // TODO: Find a better way to clean this up
+    PrevThrustMsg.Tpb = msg.Tpb;
+    PrevThrustMsg.Tps = msg.Tps;
+    PrevThrustMsg.Tsb = msg.Tsb;
+    PrevThrustMsg.Tss = msg.Tss;
     return;
 }
 
@@ -99,7 +112,7 @@ int main(int argc, char **argv)
     const int Ni = 4;           // Number of integration steps per time step
     
     // Define the rate of the main loop. Effectively the sampling rate of the controller
-    ros::Rate loop_rate(10); // (Hz)
+    ros::Rate loop_rate(LOOP_FREQ); // (Hz)
 
     // Define the publishers and subscribers
     // This node will publish RPM values on "/control/thrustEstimate", queue_size = 10
@@ -112,8 +125,7 @@ int main(int argc, char **argv)
 
     /// Define the system parameters that can be assumed to be constant
     const double M = 32.042; // System Mass (kg). Estimated from old weight from 2019 report + 26 lbs (new enclosure weight) - 11 lbs (approx old enclosure weight)
-    const double I_ZZ = 2.987; // Moment of Inert
-    ia about body-fixed Z axis (kg*m). A few estimates from CAD. Includes enclosure, bridge, 2 pontoons.
+    const double I_ZZ = 2.987; // Moment of Inertia about body-fixed Z axis (kg*m). A few estimates from CAD. Includes enclosure, bridge, 2 pontoons.
     const double L_WL = 1.2827; // Longitudinal length of hull touching water, waterline length (m). Estimated based on new draft. Current is 48.126 in from CAD. Rounding to 50 with increased draft.
     const double L_OA = 1.524; // Total longitudinal length of the vessel (m)
     const double L_CG = 0.319151; // Longitudinal distance from CoG to thrusters (m). "b" parameter in RoboBoat FBD
@@ -241,14 +253,14 @@ int main(int argc, char **argv)
         // TODO: Ensure position updates properly by supplying the translational offset provided by the transform. Seems okay based on `rosrun tf tf_echo /odom /base_link`
         
         // Calculate the total translational velocity
-        double total_vel = sqrt(pow(OdomMsg.twist.twist.linear.x, 2) + pow(OdomMsg.twist.twist.linear.y, 2))
+        double total_vel = sqrt(pow(OdomMsg.twist.twist.linear.x, 2) + pow(OdomMsg.twist.twist.linear.y, 2));
 
         // Calculate the linear drag terms, using values from WAM-V derived by Klinger:2016
         // Doing this should get around needing an absolute value with ACADO classes, but it assumes constant drag during dynamic predictions. Not sure if this is an issue.
-        double Y_v = 0.5 * RHO_H2O * abs(TwistMsg.linear.y) * (1.1 + 0.0045 * (L_WL / T) - 0.1 * (B_H / T) + 0.016 * pow(B_H / T, 2)) * (M_PI * T * L_WL) / 2;
-        double Y_r = 0.4 * M_PI * RHO_H2O * total_vel * pow(T, 2) * L_WL;
+        const double Y_v = 0.5 * RHO_H2O * abs(TwistMsg.linear.y) * (1.1 + 0.0045 * (L_WL / T) - 0.1 * (B_H / T) + 0.016 * pow(B_H / T, 2)) * (M_PI * T * L_WL) / 2;
+        const double Y_r = 0.4 * M_PI * RHO_H2O * total_vel * pow(T, 2) * L_WL;
         const int N_v = 0;
-        double N_r = 0.65 * M_PI * RHO_H2O * total_vel * pow(T, 2) * pow(L_WL, 2);
+        const double N_r = 0.65 * M_PI * RHO_H2O * total_vel * pow(T, 2) * pow(L_WL, 2);
 
         // TODO: Add a feedforward wind drag term for x/y/z with this method? Same potential issues apply -- cannot be updated with new predicted states.
 
@@ -277,21 +289,21 @@ int main(int argc, char **argv)
 
         // Reference trajectory
         // TODO: Can I have non-constant references based on the base_local_planner passing an array of the next *n* steps instead of just one-step-ahead?
-        ref(1) = CmdVelMsg.linear.x;// Surge velocity
-        ref(3) = CmdVelMsg.linear.y;// Sway velocity
-        ref(5) = CmdVelMsg.angular.z;// Angular velocity
+        ref(1) = CmdVelMsg.linear.x;    // Surge velocity
+        ref(3) = CmdVelMsg.linear.y;    // Sway velocity
+        ref(5) = CmdVelMsg.angular.z;   // Angular velocity
+
+        // BA: Does this work? A: No.
+        //double RPY = tf::euler_from_quaternion(OdomMsg.pose.pose.orientation.x, OdomMsg.pose.pose.orientation.y, OdomMsg.pose.pose.orientation.z, OdomMsg.pose.pose.orientation.w)
+        //ref(4) = RPY(2) + CmdVelMsg.angular.z / loop_rate; // Yaw/Heading
 
         // Euler-integrate for positions
-        ref(0) = OdomMsg.pose.pose.position.x + CmdVelMsg.linear.x / ros::Rate();// Surge position
-        ref(2) = OdomMsg.pose.pose.position.y + CmdVelMsg.linear.y / ros::Rate();// Sway position
-
-        // BA: Does this work?
-        double RPY = tf::euler_from_quaternion(OdomMsg.pose.pose.orientation.x, OdomMsg.pose.pose.orientation.y, OdomMsg.pose.pose.orientation.z, OdomMsg.pose.pose.orientation.w)
-        ref(4) = RPY(2) + CmdVelMsg.angular.z / ros::Rate();// Yaw/Heading
+        ref(0) = OdomMsg.pose.pose.position.x + CmdVelMsg.linear.x / LOOP_FREQ;   // Surge position
+        ref(2) = OdomMsg.pose.pose.position.y + CmdVelMsg.linear.y / LOOP_FREQ;   // Sway position
 
         // Define the Optimal Control Problem (OCP)
         // We're solving at N steps between time 0 and N*Ts
-        OCP ocp(0.0, (N / ros::Rate()), N);
+        OCP ocp(0.0, (N / LOOP_FREQ), N);
 
         // Subject to the system ODEs
         ocp.subjectTo(f);
@@ -315,22 +327,20 @@ int main(int argc, char **argv)
         RealTimeAlgorithm alg(ocp, 0.05);
         alg.set(MAX_NUM_ITERATIONS, 10);
         
-        // BA: What do these zero references do? Are they part of C++ or ACADO? I can't find any info.
         StaticReferenceTrajectory zeroReference;
- 
         Controller controller(alg, zeroReference);
 
         // Set up the simulation environment and run it.
         // TODO: Should this be zero and one horizon length? Or based on rostime?
-        SimulationEnvironment sim(0.0, (N / ros::Rate()), process, controller);
+        SimulationEnvironment sim(0.0, (N / LOOP_FREQ), process, controller);
 
-        // Define the initial conditions
+        // Define the initial conditions in body-fixed frame
         DVector x0(6);
         x0(0) = OdomMsg.pose.pose.position.x;    // surge position (m)
         x0(1) = OdomMsg.twist.twist.linear.x;    // surge velocity (m/s)
         x0(2) = OdomMsg.pose.pose.position.y;    // sway position (m)
         x0(3) = OdomMsg.twist.twist.linear.y;    // sway velocity (m/s)
-        x0(4) = RPY(2);                          // heading/yaw (rad)
+        x0(4) = 0;//RPY(2);                          // heading/yaw (rad)
         x0(5) = OdomMsg.twist.twist.angular.z;   // angular velocity (rad/s)
 
         if (sim.init( x0 ) != SUCCESSFUL_RETURN) {
@@ -341,7 +351,6 @@ int main(int argc, char **argv)
             exit( EXIT_FAILURE );
         }
 
-        // TODO: How to get result from ACADO to assign to fields of MotorCommandMsg?
         VariablesGrid sampledProcessOutput;
         sim.getSampledProcessOutput(sampledProcessOutput);
 
@@ -350,11 +359,14 @@ int main(int argc, char **argv)
 
         MotorCommandMsg.header.seq = seq;
         MotorCommandMsg.header.stamp = ros::Time::now();
-        MotorCommandMsg.header.frame = 'base_link';
-        //MotorCommandMsg.Tpb = ____;
-        //MotorCommandMsg.Tps = ____;
-        //MotorCommandMsg.Tsb = ____;
-        //MotorCommandMsg.Tss = ____;
+        MotorCommandMsg.header.frame_id = 'base_link';
+
+        // Not sure if I need this to be feedbackControl(0:3)[0] or feedbackControl(0:3)[1].
+        // Experimented with this on 6/16/2020 using Dr. Vaughan's ACADO MPC snippets
+        MotorCommandMsg.Tpb = feedbackControl(0, 1);
+        MotorCommandMsg.Tps = feedbackControl(1, 1);
+        MotorCommandMsg.Tsb = feedbackControl(2, 1);
+        MotorCommandMsg.Tss = feedbackControl(3, 1);
 
         thrust_pub.publish(MotorCommandMsg);
 
