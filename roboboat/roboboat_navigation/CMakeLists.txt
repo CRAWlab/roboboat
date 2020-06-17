@@ -7,11 +7,12 @@ project(roboboat_navigation)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-#find_package(catkin REQUIRED COMPONENTS
-#  move_base
-#  rtabmap
-#  rtabmap_ros
-#)
+find_package(catkin REQUIRED COMPONENTS
+  move_base
+  roboboat_mapping
+  rtabmap_ros
+  roslaunch
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -105,7 +106,7 @@ project(roboboat_navigation)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES roboboat_navigation
-#  CATKIN_DEPENDS move_base
+  CATKIN_DEPENDS move_base roboboat_mapping rtabmap_ros roslaunch
 #  DEPENDS system_lib
 )
 
@@ -186,11 +187,15 @@ include_directories(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(FILES
+   launch/amcl.launch # BA: Is this needed?
+   launch/move_base.launch
+   config/base_local_planner_parameters.yaml
+   config/costmap_common_parameters.yaml
+   config/global_costmap_parameters.yaml
+   config/local_costmap_parameters.yaml
+   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 #############
 ## Testing ##

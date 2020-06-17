@@ -8,7 +8,8 @@ project(roboboat_localization)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  robot_localization
+	robot_localization
+	roslaunch
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES roboboat_localization
-#  CATKIN_DEPENDS other_catkin_pkg
+   CATKIN_DEPENDS robot_localization
 #  DEPENDS system_lib
 )
 
@@ -184,11 +185,12 @@ include_directories(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(FILES
+   config/navsat_config.yaml
+   config/robot_localization.yaml
+   launch/localization.launch
+   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 #############
 ## Testing ##

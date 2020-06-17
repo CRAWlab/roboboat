@@ -1,6 +1,4 @@
-heron
+RoboBoat
 ==========
-
-Lightweight Heron packages common to robot and desktop.
-
+Based on the work done here:
 Please see the ROS wiki for details on use: http://wiki.ros.org/Robots/Heron
