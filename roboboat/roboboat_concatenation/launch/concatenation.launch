@@ -17,6 +17,6 @@
 	</node>
 
 	<!-- The service call will be handled by this node -->
-	<node type="PCLServiceCall" pkg="$(find roboboat_concatenation)" name="PCLServiceCall"/>
+	<node type="PCLServiceCall" pkg="roboboat_concatenation" name="PCLServiceCall"/>
 
 </launch>

@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 ###############################################################################
-# RoboBoat_thrust.py
+# control_allocation.py
 #
-# Mapping ROS cmd_vel messages to thruster inputs for the RoboBoat 2019 
+# Mapping MPC thrust solution messages from controller to PWM thruster inputs for the RoboBoat 2019 
 # X-configuration of BlueRobotics T-200 thrusters.
 #
 # The script is set up to control the ESC that is connected to a 
@@ -31,7 +31,8 @@
 #   - http://www.ucs.louisiana.edu/~jev9637
 #
 # Modified:
-#   * 
+#   * 6/18/2020 - BA: Adjusted some of the "hacks" used that should be handled by MPC constraints, length to thrusters,
+#                     callback function to take the newly defined MotorCommandStamped message as input to the PWM.
 #
 # TODO:
 #    * 04/20/19 - JEV - Fix throttle offset issue
@@ -50,15 +51,16 @@ import rospy
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-
+from roboboat_msgs.msg import MotorCommandStamped
 
 HEARTBEAT_MAX_MISSED = 5 # maximum number of allowable timesteps to miss before stopping
 
 # TODO: 04/27/19 - JEV - Check these values
+# 6/18/2020 - BA: Checked with CAD.
 WIDTH = 11 * 2.54/100         # Approx width to thruster (m)
-LENGTH = 13 * 2.54/100        # Approx length to thruster (m)
+LENGTH = 12.565 * 2.54/100    # Approx length to thruster (m)
 
-ESC_STARTUP_DELAY = 1.0         # Time to sleep during initialization
+ESC_STARTUP_DELAY = 1.0       # Time to sleep during initialization
 
 # TODO: 04/20/19 - JEV 
 #       * 0.4 throttle is being interpreted as zero. 
@@ -67,16 +69,15 @@ ESC_STARTUP_DELAY = 1.0         # Time to sleep during initialization
 #           - range of pulse width set
 THROTTLE_OFFSET = 0.4           # Hack for now
 
-
 # NOTE: This is a *very* rough approximation based on the forward and reverse
 #       thrust numbers reported in the BlueRobotics T-200 datasheet. 
 #
 # TODO: 05/02/19 - JEV - clean up this to match the actual limits
-MAX_FORWARD_PER_THRUSTER = 100    # defined as 100 (max) 
-MAX_REVERSE_PER_THRUSTER = -80    # Reverse thrust is ~80% of forward
+# MAX_FORWARD_PER_THRUSTER = 100    # defined as 100 (max) 
+# MAX_REVERSE_PER_THRUSTER = -80    # Reverse thrust is ~80% of forward
 
 # Define a thrust ratio to use in scaling for cases needing reverse thrust
-thrust_ratio = np.abs(MAX_REVERSE_PER_THRUSTER / MAX_FORWARD_PER_THRUSTER)
+# thrust_ratio = np.abs(MAX_REVERSE_PER_THRUSTER / MAX_FORWARD_PER_THRUSTER)
 
 # The 16-channel PWM hat has (surprise!!) 16 channels
 # kit = ServoKit(channels=16)
@@ -164,7 +165,7 @@ class RoboBoat_ThrustMapper():
         self.thrust_mapper_chatter = rospy.Publisher('chatter', String, queue_size=10)
         
         # Set up the cmd_vel subscriber and register the callback
-        rospy.Subscriber("/cmd_vel", Twist, self.calculate_and_assign_thrust) 
+        rospy.Subscriber("/control/thrustSolution", MotorCommandStamped, self.assign_thrust) 
         
         self.rate = rospy.Rate(10) # We'll run the heartbeat count at 10Hz
         
@@ -173,9 +174,9 @@ class RoboBoat_ThrustMapper():
         self.heartbeat_counter = 0
 
 
-    def calculate_and_assign_thrust(self, twist):
+    def assign_thrust(self, MotorCommand):
         """
-        This is called every time a TWist message is received. It should run
+        This is called every time a MotorCommandStamped message is received. It should run
         quickly.
         """
         
@@ -183,50 +184,56 @@ class RoboBoat_ThrustMapper():
         # cmd_vel message
         self.heartbeat_counter = 0
         
-        # Then, grab the parts of the Twist message we care about
-        self.surge_vel_command = twist.linear.x
-        self.sway_vel_command = twist.linear.y
-        self.yaw_vel_command = twist.angular.z
-        
-        # Now, represent those desired velocities as a percentage of the maximum
-        # in each direction
-        desired_input_percentage = 100* np.array([self.surge_vel_command / self.MAX_SURGE_VEL,
-                                                  self.sway_vel_command / self.MAX_SWAY_VEL,
-                                                  self.yaw_vel_command / self.MAX_YAW_VEL])
+        # Then, assign the fields of the MotorCommandStamped message
+        self.Tpb = MotorCommand.Tpb
+        self.Tps = MotorCommand.Tps
+        self.Tsb = MotorCommand.Tsb
+        self.Tss = MotorCommand.Tss
+    
+        # # Now, represent those desired velocities as a percentage of the maximum
+        # # in each direction
+        # desired_input_percentage = 100* np.array([self.surge_vel_command / self.MAX_SURGE_VEL,
+        #                                           self.sway_vel_command / self.MAX_SWAY_VEL,
+        #                                           self.yaw_vel_command / self.MAX_YAW_VEL])
 
         # Then, map that to a percentage of the maximum force/torque in the 
         # corresponding axis.
-        #
-        # Note; This is a very rough way to do this. We'd do better to 
-        # incorporate some knowledge of the boat's dynamics
-        desired_net_inputs = desired_input_percentage / 100 * np.array([self.MAX_SURGE_FORCE,
-                                                                        self.MAX_SWAY_FORCE,
-                                                                        self.MAX_YAW_TORQUE])
+        
+        # # Note; This is a very rough way to do this. We'd do better to 
+        # # incorporate some knowledge of the boat's dynamics
+        # desired_net_inputs = desired_input_percentage / 100 * np.array([self.MAX_SURGE_FORCE,
+        #                                                                 self.MAX_SWAY_FORCE,
+        #                                                                 self.MAX_YAW_TORQUE])
 
-        # Finally, solve for the thruster inputs to generate those
-        thrusts, residuals, rank, s = np.linalg.lstsq(self.A, desired_net_inputs)
+        # # Finally, solve for the thruster inputs to generate those
+        # thrusts, residuals, rank, s = np.linalg.lstsq(self.A, desired_net_inputs)
+
+        thrusts = np.array([[self.Tpb, self.Tsb],
+                            [self.Tps, self.Tss]])
 
         rospy.loginfo('Raw thruster solution = {} &'.format(thrusts))
 
         # TODO: 04/27/19 - JEV - Be more elegant here. We can do this without scaling
         #                        twice, as often happens here.
         #
+        # 6/18/2020 - BA: This should be resolved by the MPC solver constraints
+
         # If max needed thrust for any thruster is greater than capable, scale all
         # of the trusters equally
         # 
         # Here (as of 05/02/19), we're doing this by percentage. We probably 
         # should change
-        if np.max(thrusts) > 100: 
-            rospy.loginfo('Scaling due to forward thrust')
-            thrusts = thrusts / (np.max(thrusts) / 100)
-            rospy.loginfo('Scaled solution = {} %'.format(thrusts))
+        # if np.max(thrusts) > 100: 
+        #     rospy.loginfo('Scaling due to forward thrust')
+        #     thrusts = thrusts / (np.max(thrusts) / 100)
+        #     rospy.loginfo('Scaled solution = {} %'.format(thrusts))
 
-        # If max reverse thrust needed for any thruster is greater than capable, scale
-        # all of the trusters equally
-        if np.min(thrusts) < -100:
-            rospy.loginfo('Scaling due to reverse thrust')
-            thrusts = thrusts / (np.min(thrusts) / -100)
-            rospy.loginfo('Scaled solution = {} %'.format(thrusts))
+        # # If max reverse thrust needed for any thruster is greater than capable, scale
+        # # all of the trusters equally
+        # if np.min(thrusts) < -100:
+        #     rospy.loginfo('Scaling due to reverse thrust')
+        #     thrusts = thrusts / (np.min(thrusts) / -100)
+        #     rospy.loginfo('Scaled solution = {} %'.format(thrusts))
         
         # TODO: 05/02/19 - JEV - Do we need to clip throttle commands to +/-1 to account for the OFFSET
         rospy.loginfo('Throttle: {}'.format(thrusts / 100.0 + THROTTLE_OFFSET))
@@ -247,7 +254,7 @@ class RoboBoat_ThrustMapper():
         
         try: 
             while not rospy.is_shutdown():
-                # Increment the heartbeak counter by 1
+                # Increment the heartbeat counter by 1
                 self.heartbeat_counter = self.heartbeat_counter + 1
         
                 if self.heartbeat_counter >= HEARTBEAT_MAX_MISSED:

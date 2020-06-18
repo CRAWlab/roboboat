@@ -4,11 +4,16 @@
 
   <node pkg="roboboat_control" type="vel_cov" name="navsat_vel_cov" />
 
+  <include file="$(find roboboat_mapping)/launch/mapping.launch" />
+  	
+  <!-- Send velocity commands/desired trajectory -->
+  <include file="$(find roboboat_navigation)/launch/move_base.launch" />
+  
+  <!-- Main controller, optimizing thrust input to the system. -->
+  <!-- Need a PWM node after this to actually push commands to physical hardware. -->
+  <node pkg="roboboat_control" type="controller" name="MPC_controller"/>
+
   <!-- This script requires the Estop/Heartbeat nodes -->
   <node pkg="roboboat_control" type="control_allocation" name="thrust_controller" respawn="true" output="screen"/>
 
-  <include file="$(find roboboat_mapping)/launch/mapping.launch" />
-  
-  <include file="$(find roboboat_navigation)/launch/move_base.launch" />
-  
 </launch>

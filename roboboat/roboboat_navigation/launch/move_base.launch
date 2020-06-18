@@ -19,7 +19,7 @@
 	<include file="$(find roboboat_navigation)/launch/amcl.launch" />
 
 	<!-- Include move_base -->
-	<node pkg="move_base" type="move_base" respawn="false" name="move_base">
+	<node pkg="move_base" type="move_base" respawn="false" name="velocity_commands">
 		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="local_costmap" />
 		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="global_costmap" />
 
@@ -30,4 +30,5 @@
 		<!-- Local Planner Parameters -->
 		<rosparam file="$(find roboboat_navigation)/config/base_local_planner_parameters.yaml" command="load" />
 	</node>
+
 </launch>
