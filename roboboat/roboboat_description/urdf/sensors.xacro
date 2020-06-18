@@ -79,7 +79,7 @@
 
   <!-- Bow ZED-->
   <xacro:vision_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" zed_id="0">
-      <origin xyz="0 0.33476 0.16129" rpy="1.5708 0 -3.1416" />
+      <origin xyz="0 0.33476 0.16129" rpy="1.5708 0 -3.14159" />
   </xacro:vision_macro>
 
   <!-- Stern ZED-->
@@ -89,7 +89,7 @@
 
   <!-- Bow LiDAR-->
   <xacro:lidar_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" lidar_id="0">
-      <origin xyz="0 0.4399 0.07275" rpy="1.5708 0 3.1416" />
+      <origin xyz="0 0.4399 0.07275" rpy="1.5708 0 3.14159" />
   </xacro:lidar_macro>
 
   <!-- Stern LiDAR-->
