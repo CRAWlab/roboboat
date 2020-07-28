@@ -1,11 +1,23 @@
+<?xml version="1.0"?>
+<!--
+
+\file control.launch
+
+TODO:
+* Determine if control_allocation/thrust_controller node is necessary.
+
+Modified:
+*
+-->
+
 <launch>
 
   <include file="$(find roboboat_localization)/launch/localization.launch" />
 
   <node pkg="roboboat_control" type="vel_cov" name="navsat_vel_cov" />
 
-  <include file="$(find roboboat_mapping)/launch/mapping.launch" />
-  	
+<!--   <include file="$(find roboboat_mapping)/launch/mapping.launch" />
+  	 -->
   <!-- Send velocity commands/desired trajectory -->
   <include file="$(find roboboat_navigation)/launch/move_base.launch" />
   
@@ -14,6 +26,7 @@
   <node pkg="roboboat_control" type="controller" name="MPC_controller"/>
 
   <!-- This script requires the Estop/Heartbeat nodes -->
-  <node pkg="roboboat_control" type="control_allocation" name="thrust_controller" respawn="true" output="screen"/>
+  <!-- Also shouldn't be necessary based on MPC constraints/optimization -->
+<!--   <node pkg="roboboat_control" type="control_allocation" name="thrust_controller" respawn="false" output="screen"/> -->
 
 </launch>

@@ -13,10 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
   interactive_marker_twist_server
   nav_msgs
   roboboat_msgs
+  roscpp
+  roslaunch
   rospy
   sensor_msgs
   tf
-  uuv_gazebo_ros_plugins_msgs
+  uuv_gazebo_ros_plugins
   vrx_gazebo
 )
 
@@ -77,7 +79,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   nav_msgs#   roboboat_msgs#   sensor_msgs#   uuv_gazebo_ros_plugins_msgs
+#   geometry_msgs#   nav_msgs#   roboboat_msgs#   sensor_msgs
 # )
 
 ################################################
@@ -112,7 +114,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES roboboat_gazebo
-#  CATKIN_DEPENDS gazebo geometry_msgs hector_gazebo_plugins interactive_marker_twist_server nav_msgs roboboat_msgs rospy sensor_msgs tf uuv_gazebo_ros_plugins_msgs vrx_gazebo
+#  CATKIN_DEPENDS geometry_msgs hector_gazebo_plugins interactive_marker_twist_server nav_msgs roboboat_msgs roscpp roslaunch rospy sensor_msgs tf uuv_gazebo_ros_plugins vrx_gazebo
 #  DEPENDS system_lib
 )
 
@@ -166,13 +168,10 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-catkin_install_python(PROGRAMS
-   scripts/activate_control_service.py
-   scripts/navsat_vel_translate.py
-   scripts/rpy_translator.py
-   scripts/twist_translate.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# catkin_install_python(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -196,11 +195,11 @@ catkin_install_python(PROGRAMS
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-   launch/roboboat_world.launch
-   launch/roboboat_sim.launch
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 #############
 ## Testing ##

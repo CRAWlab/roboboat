@@ -8,11 +8,10 @@ project(roboboat_description)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roslaunch
   robot_state_publisher
+  roslaunch
   urdf
   xacro
-  roboboat_gazebo
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES roboboat_description
-#  CATKIN_DEPENDS robot_state_publisher urdf xacro roboboat_gazebo
+#  CATKIN_DEPENDS robot_state_publisher roslaunch urdf xacro
 #  DEPENDS system_lib
 )
 
@@ -188,26 +187,11 @@ include_directories(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-   meshes/base_link.STL
-   meshes/base_link_to_laser.STL
-   meshes/base_link_to_port_bow.STL
-   meshes/base_link_to_port_stern.STL
-   meshes/base_link_to_starboard_bow.STL
-   meshes/base_link_to_starboard_stern.STL
-   meshes/base_link_to_zed.STL
-   launch/description.launch
-   scripts/env_run
-   urdf/empty.urdf
-   urdf/base.xacro
-   urdf/actuators.xacro
-   urdf/gazebo.xacro
-   urdf/roboboat.urdf.xacro
-   urdf/sensors.xacro
-   urdf/snippets.xacro
-   urdf/robobat.gazebo
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 #############
 ## Testing ##

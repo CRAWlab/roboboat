@@ -1,3 +1,16 @@
+<?xml version="1.0"?>
+<!--
+
+\file localization.launch
+
+TODO:
+* Consider retuning EKF
+* Possibly include a node here that serves as a transform listener and republisher for /odom to /base_link and vice-versa. Currently being done internal to roboboat/roboboat_control/controller.cpp
+
+Modified:
+*
+-->
+
 <launch>
 
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_node">

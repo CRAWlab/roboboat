@@ -1,4 +1,40 @@
 <?xml version="1.0"?>
+
+<!--
+
+\file snippets.xacro
+
+TODO:
+* 
+
+Modified:
+*
+
+This file is based of the following:
+Software License Agreement (BSD)
+
+\file      snippets.xacro
+\authors   Guy Stoppi <gstoppi@clearpathrobotics.com>
+\copyright Copyright (c) 2018, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- MACRO FOR THRUSTER UNITS  -->
@@ -177,7 +213,7 @@
       <gazebo reference="${suffix_ns}zed_${zed_id}">
 
         <sensor type="multicamera" name="stereo_camera">
-          <update_rate>30.0</update_rate>
+          <update_rate>100.0</update_rate>
 
           <camera name="left">
             <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
@@ -188,8 +224,9 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.02</near>
-              <far>300</far>
+              <!-- BA: can't find any info on this. I set this to be the ZED camera's depth range (meters). -->
+              <near>0.3</near>
+              <far>25</far>
             </clip>
             <noise>
               <type>gaussian</type>
@@ -207,8 +244,8 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.02</near>
-              <far>300</far>
+              <near>0.3</near>
+              <far>25</far>
             </clip>
             <noise>
               <type>gaussian</type>
@@ -219,12 +256,12 @@
 
           <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
             <alwaysOn>true</alwaysOn>
-            <updateRate>0.0</updateRate>
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
             <cameraName>multisense_sl/camera/${zed_id}</cameraName>
             <imageTopicName>image_raw</imageTopicName>
             <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-            <frameName>left_camera_optical_frame</frameName>
-            <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
+            <frameName>bow/zed_left_lens</frameName>
+            <rightFrameName>bow/zed_right_lens</rightFrameName>
             <hackBaseline>0.07</hackBaseline>
             <distortionK1>0.0</distortionK1>
             <distortionK2>0.0</distortionK2>
@@ -235,7 +272,7 @@
         </sensor>
 
         <sensor name="bowPoints_camera" type="depth">
-          <update_rate>20</update_rate>
+          <update_rate>100</update_rate>
 
           <camera>
             <horizontal_fov>1.5707963</horizontal_fov>
@@ -246,14 +283,14 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.05</near>
-              <far>3</far>
+              <near>0.3</near>
+              <far>25</far>
             </clip>
           </camera>
 
           <plugin name="bowPoints_controller" filename="libgazebo_ros_openni_kinect.so">
             <baseline>0.2</baseline>
-            <alwaysOn>true</alwaysOn>
+            <alwaysOn>true</alwaysOn> 
             <updateRate>1.0</updateRate>
             <cameraName>bowPoints</cameraName>
             <imageTopicName>/bowPoints/color/image_raw</imageTopicName>
@@ -277,6 +314,7 @@
           </plugin>
         </sensor>
       </gazebo>
+
     </xacro:if>
 
     <!-- Stern -->
@@ -284,8 +322,9 @@
       <gazebo reference="${suffix_ns}zed_${zed_id}">
 
         <sensor type="multicamera" name="stereo_camera">
-          <update_rate>30.0</update_rate>
+          <update_rate>100.0</update_rate>
 
+          <!-- Similar comments for <clip> tag as above -->
           <camera name="left">
             <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
             <horizontal_fov>1.5707963</horizontal_fov>
@@ -295,8 +334,8 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.02</near>
-              <far>300</far>
+              <near>0.3</near>
+              <far>25</far>
             </clip>
             <noise>
               <type>gaussian</type>
@@ -314,8 +353,8 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.02</near>
-              <far>300</far>
+              <near>0.3</near>
+              <far>25</far>
             </clip>
             <noise>
               <type>gaussian</type>
@@ -326,12 +365,12 @@
 
           <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
             <alwaysOn>true</alwaysOn>
-            <updateRate>0.0</updateRate>
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
             <cameraName>multisense_sl/camera/${zed_id}</cameraName>
             <imageTopicName>image_raw</imageTopicName>
             <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-            <frameName>left_camera_optical_frame</frameName>
-            <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
+            <frameName>stern/zed_left_lens</frameName>
+            <rightFrameName>stern/zed_right_lens</rightFrameName>-->
             <hackBaseline>0.07</hackBaseline>
             <distortionK1>0.0</distortionK1>
             <distortionK2>0.0</distortionK2>
@@ -342,7 +381,7 @@
         </sensor>
 
         <sensor name="sternPoints_camera" type="depth">
-          <update_rate>20</update_rate>
+          <update_rate>100</update_rate>
 
           <camera>
             <horizontal_fov>1.5707963</horizontal_fov>
@@ -353,15 +392,15 @@
               <format>R8G8B8</format>
             </image>
             <clip>
-              <near>0.05</near>
-              <far>3</far>
+              <near>0.3</near>
+              <far>25</far>
             </clip>
           </camera>
 
           <plugin name="sternPoints_controller" filename="libgazebo_ros_openni_kinect.so">
             <baseline>0.2</baseline>
             <alwaysOn>true</alwaysOn>
-            <updateRate>1.0</updateRate>
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
             <cameraName>sternPoints</cameraName>
             <imageTopicName>/sternPoints/color/image_raw</imageTopicName>
             <cameraInfoTopicName>/sternPoints/color/camera_info</cameraInfoTopicName>
@@ -447,14 +486,15 @@
               <horizontal>
                 <samples>720</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796</min_angle>
-                <max_angle>1.570796</max_angle>
+                <min_angle>-2.3561925</min_angle>
+                <max_angle>2.3561925</max_angle>
               </horizontal>
             </scan>
             <range>
               <min>0.10</min>
               <max>30.0</max>
-              <resolution>0.01</resolution>
+              <!--<resolution>0.25</resolution> --><!-- This is for deg -->
+              <resolution>0.00436</resolution> <!-- This is for rad -->
             </range>
             <noise>
               <type>gaussian</type>
@@ -488,14 +528,15 @@
               <horizontal>
                 <samples>720</samples>
                 <resolution>1</resolution>
-                <min_angle>-1.570796</min_angle>
-                <max_angle>1.570796</max_angle>
+                <min_angle>-2.3561925</min_angle>
+                <max_angle>2.3561925</max_angle>
               </horizontal>
             </scan>
             <range>
               <min>0.10</min>
               <max>30.0</max>
-              <resolution>0.01</resolution>
+              <!--<resolution>0.25</resolution> --><!-- This is for deg -->
+              <resolution>0.00436</resolution> <!-- This is for rad -->
             </range>
             <noise>
               <type>gaussian</type>

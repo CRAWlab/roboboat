@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES roboboat_tf
-  CATKIN_DEPENDS geometry_msgs roscpp roslaunch rospy std_msgs tf
+#  CATKIN_DEPENDS geometry_msgs roscpp roslaunch rospy std_msgs tf
 #  DEPENDS system_lib
 )
 
@@ -189,10 +189,11 @@ include_directories(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-   launch/tf.launch
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 #############
 ## Testing ##
