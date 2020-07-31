@@ -49,12 +49,21 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 	
 	<!-- Vehicle's initial pose -->
 	<!-- TODO: Wrap this with an if statement with an argument to simulate different initial conditions or poses? -->
+<<<<<<< HEAD
 	<arg name="x"     default="65"/>
 	<arg name="y"     default="15"/>
 	<arg name="z"     value="0.13"/>
 	<arg name="roll"  value="0"/>
 	<arg name="pitch" value="0"/>
 	<arg name="yaw"   default="-1.57"/>
+=======
+	<arg name="x"     default="40"/>
+	<arg name="y"     default="-40"/>
+	<arg name="z"     value="0.13"/>
+	<arg name="roll"  value="0"/>
+	<arg name="pitch" value="0"/>
+	<arg name="yaw"   default="0"/>
+>>>>>>> origin/dev
 
 	<!-- Should these includes be in the <group> tag? -->
 	<!-- File with all static transforms -->

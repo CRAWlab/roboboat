@@ -26,5 +26,5 @@ obstacles_pointcount:
 
 #layer definitions
 static:
-    map_topic: map
+    map_topic: bow/grid_map
     subscribe_to_updates: true

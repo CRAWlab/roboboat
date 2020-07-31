@@ -20,7 +20,11 @@ Modified:
 	<node name="map_saver" pkg="map_server" type="map_saver" respawn="true" output="screen">
 		<param name="occ" value="50"/>
 		<param name="free" value="50"/>
+<<<<<<< HEAD
 		<remap from="map" to="/map"/>
+=======
+<!-- 		<remap from="map" to="/bow/grid_map"/> -->
+>>>>>>> origin/dev
 	</node>
 
 	<!-- Node that reads the map -->

@@ -1,5 +1,6 @@
 <launch>
 
+<<<<<<< HEAD
 	<!-- BA: Taking these from "rtabmap_ros/launch/demo/demo_turtlebot_mapping.launch" -->
 
 	<arg name="database_path"     default="rtabmap.db"/>
@@ -143,5 +144,85 @@
 			<remap from="scan"            to="/scan"/>
 		</node> -->
 	</group>
+=======
+	<!-- Stereo Mapping -->
+	<!-- Image Rectification -->
+	<node pkg="nodelet" type="nodelet" name="bow_stereo_nodelet" ns="bow" args="manager" />
+
+	<node pkg="stereo_image_proc" type="stereo_image_proc" name="bow_stereo_image_proc" ns="bow">
+		<remap from="left/image_raw" to="/multisense_sl/camera/0/left/image_raw" />
+		<remap from="left/camera_info" to="/multisense_sl/camera/0/left/camera_info" />
+		<remap from="right/image_raw" to="/multisense_sl/camera/0/right/image_raw" />
+		<remap from="right/camera_info" to="/multisense_sl/camera/0/right/camera_info" />
+		<param name="disparity_range" value="128" />
+
+		<!-- Publications -->
+		<remap from="points2" to="cloud"/>
+
+	</node>
+
+	<!-- Bow Stereo Odometry -->
+	<node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" ns="bow" output="screen" >
+		<!-- <remap from="left/image_rect" to="left/image_rect" />
+		<remap from="right/image_rect" to="right/image_rect" /> -->
+		<remap from="left/camera_info" to="/multisense_sl/camera/0/left/camera_info" />
+		<remap from="right/camera_info" to="/multisense_sl/camera/0/right/camera_info" />
+		<remap from="odom" to="/bow/stereo_odometry" />
+
+		<param name="frame_id" type="string" value="base_link" /> <!-- base_footprint? -->
+		<param name="odom_frame_id" type="string" value="odom" />
+		<param name="approx_sync" type="bool" value="true" />
+
+		<param name="Vis/Strategy" type="string" value="0" /> <!-- 0 = BOW, 1 = OpticalFlow -->
+		<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+		<param name="Vis/MinInliers" type="string" value="10" />
+		<param name="Vis/RoiRatios" type="string" value="0.03  0.03 0.04 0.04" />
+		<param name="Vis/MaxDepth" type="string" value="25" /> <!-- Adjusted for ZED camera range -->
+		<param name="VisBow/NNDR" type="string" value="0.8" />
+		<param name="Vis/MaxFeatures" type="string" value="1000" />
+		<param name="Vis/FillInfoData" type="string" value="false" />
+		<param name="GFTT/MinDistance" type="string" value="0.3" /> <!-- Adjusted for ZED camera range -->
+		<param name="GFTT/QualityLevel" type="string" value="0.00001" />
+	</node>
+
+
+
+	<!-- SLAM based only on the bow camera (for now) -->
+	<!-- Visual SLAM: args: "delete_db_on_start" and "udebug" -->
+	<node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" ns="bow" args="--delete_db_on_start" >
+		<param name="frame_id" type="string" value="base_link" /> <!-- base_footprint? -->
+		<param name="subscribe_stereo" type="bool" value="true" />
+		<param name="subscribe_rgb" type="bool" value="false" />
+		<param name="subscribe_depth" type="bool" value="false" /> <!-- Should probably set this to true once I figure out what's wrong with the map -->
+
+		<param name="approx_sync" type="bool" value="true" />
+
+		<!-- I think namespace will take effect here -->
+		<!-- <remap from="left/image_rect" to="left/image_rect" />
+		<remap from="right/image_rect" to="right/image_rect" /> -->
+		<remap from="left/camera_info" to="/multisense_sl/camera/0/left/camera_info" />
+		<remap from="right/camera_info" to="/multisense_sl/camera/0/right/camera_info" />
+		<remap from="odom" to="stereo_odometry" />
+
+		<param name="queue_size" type="int" value="30" />
+
+		<!-- RTAB-Map's parameters -->
+		<param name="Rtabmap/TimeThr" type="string" value="700" />
+		<param name="Rtabmap/DetectionRate" type="string" value="1" />
+
+		<param name="Kp/RoiRatios" type="string" value="0.03 0.03 0.04 0.04" />
+		<param name="Kp/DetectorStrategy" type="string" value="0" /> <!-- Use SURF -->
+		<param name="Kp/NNStrategy" type="string" value="1" />
+
+		<param name="SURF/HessianThreshold" type="string" value="1000" />
+
+		<param name="Vis/MinInliers" type="string" value="10" />
+		<param name="Vis/EstimationType" type="string" value="1" /> <!-- 3D -> 2D (PnP) -->
+
+		<param name="RGBD/LoopClosureReextractFeatures" type="string" value="true" />
+		<param name="Vis/MaxFeatures" type="string" value="500" />
+		<param name="Vis/MaxDepth" type="string" value="25" /> <!-- Adjusted for ZED camera range -->
+	</node>
+>>>>>>> origin/dev
 
 </launch>

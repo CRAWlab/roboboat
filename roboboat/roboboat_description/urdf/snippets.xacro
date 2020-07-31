@@ -256,7 +256,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
           <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
             <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
             <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
             <cameraName>multisense_sl/camera/${zed_id}</cameraName>
             <imageTopicName>image_raw</imageTopicName>
             <cameraInfoTopicName>camera_info</cameraInfoTopicName>
@@ -291,7 +295,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
           <plugin name="bowPoints_controller" filename="libgazebo_ros_openni_kinect.so">
             <baseline>0.2</baseline>
             <alwaysOn>true</alwaysOn> 
+<<<<<<< HEAD
             <updateRate>100.0</updateRate>
+=======
+            <updateRate>1.0</updateRate>
+>>>>>>> origin/dev
             <cameraName>bowPoints</cameraName>
             <imageTopicName>/bowPoints/color/image_raw</imageTopicName>
             <cameraInfoTopicName>/bowPoints/color/camera_info</cameraInfoTopicName>
@@ -365,7 +373,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
           <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
             <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
             <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
             <cameraName>multisense_sl/camera/${zed_id}</cameraName>
             <imageTopicName>image_raw</imageTopicName>
             <cameraInfoTopicName>camera_info</cameraInfoTopicName>
@@ -400,7 +412,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
           <plugin name="sternPoints_controller" filename="libgazebo_ros_openni_kinect.so">
             <baseline>0.2</baseline>
             <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
             <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
             <cameraName>sternPoints</cameraName>
             <imageTopicName>/sternPoints/color/image_raw</imageTopicName>
             <cameraInfoTopicName>/sternPoints/color/camera_info</cameraInfoTopicName>
