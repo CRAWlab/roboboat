@@ -9,21 +9,19 @@ resolution: 0.05     # Map resolution in m
 inflation:
     inflation_radius: 0.25   # Added buffer around cells (m)
 
-# This has been commented out because lasers are now both publishing on /scan and combined
-# using roboboat_concatenation/launch/concatenation.launch via laser_assembler.
-# This creates additional point clouds. http://wiki.ros.org/laser_assembler
-# obstacles_laser:
-#     observation_sources: bow_lidar stern_lidar
-#     bow_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/0, inf_is_valid: true}
-#     stern_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/0, inf_is_valid: true}
+obstacles_laser:
+    observation_sources: bow_lidar stern_lidar
+    bow_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/0, inf_is_valid: true}
+    stern_lidar: {data_type: LaserScan, clearing: true, marking: true, topic: /laser/scan/1, inf_is_valid: true}
 
 obstacles_pointcount:
-    observation_sources: composite_cloud #bow_point_cloud stern_point_cloud
-    #bow_point_cloud: {data_type: PointCloud2, topic: /bowPoints/depth/points, marking: true, clearing: true}
-    #stern_point_cloud: {data_type: PointCloud2, topic: /sternPoints/depth/points, marking: true, clearing: true}
+    observation_sources: composite_cloud bow_point_cloud stern_point_cloud
+    bow_point_cloud: {data_type: PointCloud2, topic: /bowPoints/depth/points, marking: true, clearing: true}
+    stern_point_cloud: {data_type: PointCloud2, topic: /sternPoints/depth/points, marking: true, clearing: true}
 
     # Use the composite point cloud
-    composite_cloud: {data_tpe: PointCloud, topic: /pcl/combined, marking: true, clearing: true}
+    # TODO: Experiment with this
+    #composite_cloud: {data_tpe: PointCloud, topic: /pcl/combined, marking: true, clearing: true}
     # may need to add sensor_frame: frame_name, above
 
 #layer definitions

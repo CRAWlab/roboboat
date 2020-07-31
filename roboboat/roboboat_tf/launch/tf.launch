@@ -1,27 +1,42 @@
+<?xml version="1.0"?>
+<!--
+
+\file tf.launch
+Static transform publishers for RoboBoat
+
+TODO:
+* Verify TFs beteween ZED centers and ZED lenses
+* Determine if Motor TFs are necessary
+
+Modified:
+*
+
+-->
+
 <launch>
 
 	<!-- ZEDs -->
-	<!-- base_link to bow_zed (0) -->
+	<!-- base_link to bow_zed (Denoted by 0) -->
 	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed" args="0.295 0 0.18 0 0 0 /base_link /bow/zed_camera_center 10" />
 
-	<!-- base_link to stern_zed (1) -->
+	<!-- base_link to stern_zed (Denoted by 1) -->
 	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed" args="-0.295 0 0.18 0 0 3.14159 /base_link /stern/zed_camera_center 10" />
 
 	<!-- TODO: Check this tf -->
-	<!-- base_link to bow_zed_left_lens -->
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed_left" args="0 0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_left_lens 10" />
+	<!-- /bow/zed_camera_center to bow_zed_left_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="bow_zed_center_to_bow_zed_left" args="0 0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_left_lens 10" />
 
 	<!-- TODO: Check this tf -->
-	<!-- base_link to bow_zed_right_lens -->
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_bow_zed_right" args="0 -0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_right_lens 10" />
+	<!-- /bow/zed_camera_center to bow_zed_right_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="bow_zed_center_to_bow_zed_right" args="0 -0.07 0 0 0 0 /bow/zed_camera_center /bow/zed_right_lens 10" />
 
 	<!-- TODO: Check this tf -->
-	<!-- base_link to stern_zed_left_lens -->
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed_left" args="0 0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_left_lens 10" />
+	<!-- /stern/zed_camera_center to stern_zed_left_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="stern_zed_center_to_stern_zed_left" args="0 0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_left_lens 10" />
 
 	<!-- TODO: Check this tf -->
-	<!-- base_link to stern_zed_right_lens -->
-	<node pkg="tf" type="static_transform_publisher" name="base_link_to_stern_zed_right" args="0 -0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_right_lens 10" />
+	<!-- /stern/zed_camera_center to stern_zed_right_lens -->
+	<node pkg="tf" type="static_transform_publisher" name="stern_zed_center_to_stern_zed_right" args="0 -0.07 0 0 0 0 /stern/zed_camera_center /stern/zed_right_lens 10" />
 
 
 	<!-- LiDARs -->

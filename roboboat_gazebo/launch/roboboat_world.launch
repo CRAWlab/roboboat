@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <!--
 
-\file roboboat_world.launch
+roboboat_world.launch
+Author: Benjamin Armentor <benarmentor@gmail.com>
 
-This file is based of the following:
+Modified:
+*
+This file is based on heron_world.launch from Clearpath Robotics:
+
 Software License Agreement (BSD)
 
 \file      heron_world.launch
@@ -27,45 +31,57 @@ OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTE
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
+
 <launch>
 
-  <arg name="world_pkg" default="uuv_gazebo_worlds" />
-  <arg name="world_pkg_file" default="ocean_waves.launch" />  <!-- ocean_waves.launch, lake.launch -->
-  <arg name="world" default="$(find vrx_gazebo)/worlds/example_course.world" /> <!-- This is for VRX -->
-  <arg name="world_file" default="0" />
-  <arg name="use_pkg_path" default="1" />
-  <arg name="gui" default="false" />
+	<!-- For using UUV Gazebo -->
+	<arg name="world_pkg" default="uuv_gazebo_worlds" />
+	<!-- Alternative filenames:
+		1) lake.launch
+	-->
+	<arg name="world_pkg_file" default="ocean_waves.launch" />
 
-  <arg name="hydro_debug" default="0" />
-  <arg name="config" default="base" />
+	<!-- For using VRX Gazebo Sandisland -->
+	<arg name="world" default="$(find vrx_gazebo)/worlds/example_course.world"/>
 
-  <arg name="namespace" default="" />
 
-  <!-- Launch a world file using an absolute file path -->
-  <group unless="$(arg use_pkg_path)">
-    <include file="$(arg world_file)" >
-      <arg name="gui" value="$(arg gui)" />
-    </include>
-  </group>
+	<arg name="world_file" default="0" />
+	<arg name="use_pkg_path" default="1" />
+	<arg name="gui" default="false" />
 
-  <!-- This is for UUV -->
-  <!-- Launch a world file from the launch folder of a package -->
-<!--   <group if="$(arg use_pkg_path)">
-    <include file="$(eval find(arg('world_pkg')) + '/launch' + arg('world_pkg_file'))" >
-      <arg name="gui" value="$(arg gui)" />
-    </include>
-  </group> -->
+	<!-- BA: Not quite sure what this is used for. Log files? -->
+	<arg name="hydro_debug" default="0" />
+	<!-- Adjust this if additional configurations are explored in
+	roboboat/roboboat_description/urdf/configs -->
+	<arg name="config" default="base" />
+	<arg name="namespace" default="" />
 
-<!-- Start Gazebo with the world file --> <!-- VRX -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name"   value="$(arg world)"/>
-    <arg name="use_sim_time" value="true"/>
-    <arg name="gui"          value="$(arg gui)" />
-  </include>
+	<!-- Load a world file in Gazebo -->
+	<group unless="$(arg use_pkg_path)">
+		<include file="(arg world_file">
+			<arg name="gui" value="$(arg gui)" />
+		</include>
+	</group>
 
-  <!-- Start simulating a Roboboat -->
-  <include file="$(find roboboat_gazebo)/launch/roboboat_sim.launch">
-    <arg name="namespace" value="$(arg namespace)" />
-  </include>
+	<!-- For UUV Gazebo -->
+	<!--
+	<group if="$(arg use_pkg_path)">
+    	<include file="$(eval find(arg('world_pkg')) + '/launch' + 	arg('world_pkg_file'))" >
+      		<arg name="gui" value="$(arg gui)" />
+    	</include>
+  	</group>
+	-->
+
+	<!-- For VRX Gazebo -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+	    <arg name="world_name"   value="$(arg world)"/>
+	    <arg name="use_sim_time" value="true"/>
+	    <arg name="gui"          value="$(arg gui)" />
+  	</include>
+
+  	<!-- Simulate a RoboBoat -->
+  	<include file="$(find roboboat_gazebo)/launch/roboboat_sim.launch">
+  		<arg name="namespace" value="$(arg namespace)" />
+  	</include>
 
 </launch>

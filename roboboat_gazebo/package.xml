@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>roboboat_gazebo</name>
-  <version>0.0.1</version>
-  <description>The roboboat_gazebo package, used to simulate UL Lafayette's RoboBoat. Based on Clearpath Robotics's Heron Simulation.</description>
+  <version>0.0.0</version>
+  <description>The roboboat_gazebo package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -25,7 +25,7 @@
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
   <!-- Example: -->
-  <author email="benarmentor@gmail.com">Benjamin Armentor</author> -->
+  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
 
 
   <!-- The *depend tags are used to specify dependencies -->
@@ -48,41 +48,46 @@
   <!--   <test_depend>gtest</test_depend> -->
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
-
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>hector_gazebo_plugins</build_depend>
-  <build_depend>interactive_marker_twist_server</build_depend> <!-- Probably can be removed -->
+  <build_depend>interactive_marker_twist_server</build_depend>
   <build_depend>nav_msgs</build_depend>
   <build_depend>roboboat_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>roslaunch</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>tf</build_depend>
-  <build_depend>uuv_gazebo_ros_plugins_msgs</build_depend>
+  <build_depend>uuv_gazebo_ros_plugins</build_depend>
   <build_depend>vrx_gazebo</build_depend>
 
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>hector_gazebo_plugins</build_export_depend>
-  <build_export_depend>interactive_marker_twist_server</build_export_depend> <!-- Probably can be removed -->
+  <build_export_depend>interactive_marker_twist_server</build_export_depend>
   <build_export_depend>nav_msgs</build_export_depend>
   <build_export_depend>roboboat_msgs</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>roslaunch</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
-  <build_export_depend>uuv_gazebo_ros_plugins_msgs</build_export_depend>
+  <build_export_depend>uuv_gazebo_ros_plugins</build_export_depend>
   <build_export_depend>vrx_gazebo</build_export_depend>
-
-  <exec_depend>gazebo</exec_depend>
+  
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>hector_gazebo_plugins</exec_depend>
-  <exec_depend>interactive_marker_twist_server</exec_depend> <!-- Probably can be removed -->
+  <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>roboboat_msgs</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
-  <exec_depend>uuv_gazebo_ros_plugins_msgs</exec_depend>
+  <exec_depend>uuv_gazebo_ros_plugins</exec_depend>
   <exec_depend>vrx_gazebo</exec_depend>
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

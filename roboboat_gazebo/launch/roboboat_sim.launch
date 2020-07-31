@@ -1,12 +1,20 @@
 <?xml version="1.0"?>
 <!--
 
-\file roboboat_sim.launch
+robobat_sim.launch
+Author: Benjamin Armentor <benarmentor@gmail.com>
 
-This file is based of the following:
+TODO:
+* Wrap ICs with an if statement with an argument to simulate different initial conditions or poses?
+
+Modified:
+*
+
+This file is basd on heron_world.launch from Clearpath Robotics:
+
 Software License Agreement (BSD)
 
-\file      heron_sim.launch
+\file      heron_world.launch
 \authors   Guy Stoppi <gstoppi@clearpathrobotics.com>
 \copyright Copyright (c) 2018, Clearpath Robotics, Inc., All rights reserved.
 
@@ -30,92 +38,74 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 <launch>
 
-  <!-- Debug flag -->
-  <arg name="hydro_debug" default="0"/>
-  <rosparam param="/use_sim_time">true</rosparam>
+	<!-- Re-including this from roboboat_world.launch. Not sure if entirely necessary -->
+	<arg name="hydro_debug" default="0"/>
+	<rosparam param="/use_sim_time">true</rosparam>
 
-  <!-- Vehicle's initial pose -->
-  <arg name="x"     default="40"/>
-  <arg name="y"     default="-40"/>
-  <arg name="z"     value="0.13"/>
-  <arg name="roll"  value="0"/>
-  <arg name="pitch" value="0"/>
-  <arg name="yaw"   default="0"/>
+	<!-- Not sure why I need to include this, but it seems I do. -->
+	<arg name="namespace" default=""/>
+	<!-- I think you would need to change this to match roboboat_world.launch manually -->
+	<arg name="config" default="base" />
+	
+	<!-- Vehicle's initial pose -->
+	<!-- TODO: Wrap this with an if statement with an argument to simulate different initial conditions or poses? -->
+	<arg name="x"     default="65"/>
+	<arg name="y"     default="15"/>
+	<arg name="z"     value="0.13"/>
+	<arg name="roll"  value="0"/>
+	<arg name="pitch" value="0"/>
+	<arg name="yaw"   default="-1.57"/>
 
-  <arg name="namespace" default=""/>
-  <arg name="config" default="base" />
+	<!-- Should these includes be in the <group> tag? -->
+	<!-- File with all static transforms -->
+	<include file="$(find roboboat_tf)/launch/tf.launch" ns="/$(arg namespace)"/>
 
-  <include file="$(find roboboat_tf)/launch/tf.launch" ns="/$(arg namespace)"/>
+	<!-- Launches roboboat's description nodes -->
+	<include file="$(find roboboat_description)/launch/description.launch">
+		<arg name="namespace" value="$(arg namespace)" />
+		<arg name="hydro_debug" value="$(arg hydro_debug)" />
+	</include>
 
-  <!-- Laser and PointCloud Concatenation -->
-  <include file="$(find roboboat_concatenation)/launch/concatenation.launch" ns="/$(arg namespace)"/>
+	<!-- Basic localization -->
+	<rosparam param="/$(arg namespace)/ekf_localization_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
+	<rosparam param="/$(arg namespace)/navsat_transform_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
+	<rosparam param="/$(arg namespace)/navsat_transform_node/use_odometry_yaw">true</rosparam>
+	<include file="$(find roboboat_control)/launch/control.launch" ns="/$(arg namespace)" />
+	
+	<!-- Mapping -->
+	<include file="$(find roboboat_mapping)/launch/mapping.launch" ns="/$(arg namespace)"/>
 
-  <group ns="/$(arg namespace)">
+	<!-- Group everything under the namespace -->
+	<group ns="/$(arg namespace)">
 
-    <!-- Filter for Imu message -->
-    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick">
-      <param name="~use_magnetic_field_msg" value="false" />
-      <param name="~use_mag" value="false" />
-      <param name="world_frame" value="enu" />
-      <param name="publish_debug_topics" value="true" />
-      <param name="~publish_tf" value="false" />
-    </node>
+		<!-- Filter for Imu message -->
+	    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick">
+	      <param name="~use_magnetic_field_msg" value="false" />
+	      <param name="~use_mag" value="false" />
+	      <param name="world_frame" value="enu" />
+	      <param name="publish_debug_topics" value="true" />
+	      <param name="~publish_tf" value="false" />
+	    </node>
 
-    <!-- Translate Imu's quaternion to Roll/Pitch/Yaw -->
-    <node pkg="roboboat_gazebo" type="rpy_translator.py" name="rpy_translator" />
+	    <!-- Translate Imu's quaternion to Roll/Pitch/Yaw -->
+    	<node pkg="roboboat_gazebo" type="rpy_translator.py" name="rpy_translator" />
 
-    <group if="$(eval namespace == '')">
-      <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-            args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model roboboat -param /robot_description"/>
-    </group>
+    	<!-- Translates navsat/velocity from Vector3Stamped to TwistStamped on navsat/vel -->
+	    <node pkg="roboboat_gazebo" type="navsat_vel_translate.py" name="navvel_translate" />
 
-    <group unless="$(eval namespace == '')">
-      <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-            args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/>
-    </group>
+	    <!-- Don't think this is needed? Recycled from Clearpath's Heron. -->
+	    <!-- <node pkg="roboboat_gazebo" type="activate_control_service.py" name="activate_control_service" /> -->
+	    
+    	<!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    	<group if="$(eval namespace == '')">
+	    	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model roboboat -param /robot_description"/>
+	    </group>
 
-    <!-- Translates navsat/velocity from Vector3Stamped to TwistStamped on navsat/vel -->
-    <node pkg="roboboat_gazebo" type="navsat_vel_translate.py" name="navvel_translate" />
+	    <group unless="$(eval namespace == '')">
+	      <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+	      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/>
+    	</group>
 
-    <!-- Don't think this is needed -->
-    <node pkg="roboboat_gazebo" type="activate_control_service.py" name="activate_control_service" />
+	</group>
 
-  </group>
-
-  <!-- Basic localization -->
-  <rosparam param="/$(arg namespace)/ekf_localization_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
-  <rosparam param="/$(arg namespace)/navsat_transform_node/tf_prefix" subst_value="True">$(arg namespace)</rosparam>
-  <rosparam param="/$(arg namespace)/navsat_transform_node/use_odometry_yaw">true</rosparam>
-  <include file="$(find roboboat_control)/launch/control.launch" ns="/$(arg namespace)" />
-
-  <!-- Launches roboboat's description nodes -->
-  <include file="$(find roboboat_description)/launch/description.launch">
-    <arg name="namespace" value="$(arg namespace)" />
-    <arg name="hydro_debug" value="$(arg hydro_debug)" />
-  </include>
-
-  <!-- Start up darknet_ros YOLO object detection nodes -->
-  <!-- Bow ZED -->
-  <!-- Not sure if this image_raw from Gazebo is RGB or not -->
-<!--   <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="bow" >
-    <arg name="launch_prefix" default=""/>
-    <arg name="image" default="/camera/rgb/image_raw" />
-    <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
-    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
-    <arg name="ros_param_file"             default="$(find darknet_ros)/config/bow_ros.yaml"/>
-    <arg name="network_param_file"         default="$(find darknet_ros)/config/yolov3.yaml"/>
-  </include> -->
-
-  <!-- Stern ZED -->
-<!--   <include file="$(find darknet_ros)/launch/darknet_ros.launch" ns="stern" >
-    <arg name="launch_prefix" default=""/>
-    <arg name="image" default="/camera/rgb/image_raw" />
-    <arg name="yolo_weights_path"          default="$(find darknet_ros)/yolo_network_config/weights"/>
-    <arg name="yolo_config_path"           default="$(find darknet_ros)/yolo_network_config/cfg"/>
-    <arg name="ros_param_file"             default="$(find darknet_ros)/config/stern_ros.yaml"/>
-    <arg name="network_param_file"         default="$(find darknet_ros)/config/yolov3.yaml"/>
-
-  </include> -->
 </launch>

@@ -1,3 +1,15 @@
+<?xml version="1.0"?>
+<!--
+
+\file move_base.launch
+
+TODO:
+* Determine if AMCL node/launch file is necessary.
+
+Modified:
+*
+-->
+
 <launch>
 
 	<!-- Is this handled by RTabMap? -->
@@ -5,21 +17,21 @@
 
 	<!-- Node that saves the map -->
 	<!-- TODO: This doesn't appear to work in isolation. Is there a roslaunch analog for the rosrun commands? I can't find one in documentation. -->
-	<!-- <node name="map_saver" pkg="map_server" type="map_saver" respawn="true" output="screen">
+	<node name="map_saver" pkg="map_server" type="map_saver" respawn="true" output="screen">
 		<param name="occ" value="50"/>
 		<param name="free" value="50"/>
-		<param name="filename" value="$(find roboboat_mapping)/map/recent_map.pgm"/>
-	</node> -->
+		<remap from="map" to="/map"/>
+	</node>
 
 	<!-- Node that reads the map -->
-	<!-- <node name="map_server" pkg="map_server" type="map_server" respawn="true" output="screen" args="$(find roboboat_mapping)/map/recent_map.pgm 0.05" />
- -->
+	<!-- <node name="map_server" pkg="map_server" type="map_server" respawn="true" output="screen" args="$(find roboboat_mapping)/map/recent_map.pgm 0.05" /> -->
+
 	<!-- Include AMCL for localization -->
 	<!-- BA: Do we need this if we also have ekf_localization_node? -->
 	<include file="$(find roboboat_navigation)/launch/amcl.launch" />
 
 	<!-- Include move_base -->
-	<node pkg="move_base" type="move_base" respawn="false" name="velocity_commands">
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base">
 		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="local_costmap" />
 		<rosparam file="$(find roboboat_navigation)/config/costmap_common_parameters.yaml" command="load" ns="global_costmap" />
 
