@@ -1,0 +1,30 @@
+<package format="2">
+  <name>rotors_gazebo</name>
+  <version>2.2.3</version>
+  <description>The f450_gazebo package</description>
+
+  <maintainer email="brennan.moeller@gmail.com">Brennan Moeller</maintainer>
+  <maintainer email="benjamin.willis1@louisiana.edu">Ben Willis</maintainer>
+
+  <author>Benjamin Willis</author>
+  <author>Brennan Moeller</author>
+
+  <license>ASL 2.0</license>
+
+  <url type="website">https://github.com/CRAWlab/roboboat</url>
+  <url type="website">https://github.com/ethz-asl/rotors_simulator</url>
+  <url type="bugtracker">https://github.com/ethz-asl/rotors_simulator/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>gazebo_msgs</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>geometry_msgs</depend>
+  <depend>joy</depend>
+  <depend>mav_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rotors_gazebo_plugins</depend>
+  <depend>sensor_msgs</depend>
+  <depend>xacro</depend>
+
+</package>

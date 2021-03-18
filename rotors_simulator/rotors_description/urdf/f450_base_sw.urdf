@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="f450_base">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.000127019604500816 0.00653398352512843 -0.0445512752609047"
+        rpy="0 0 0" />
+      <mass
+        value="1.43508388852705" />
+      <inertia
+        ixx="0.00303433533858399"
+        ixy="4.5751812000923E-08"
+        ixz="1.58361637575774E-07"
+        iyy="0.00149654552805538"
+        iyz="-4.83515340559471E-07"
+        izz="0.00381045049143025" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Link_1">
+    <inertial>
+      <origin
+        xyz="-7.53715834189705E-09 0.00767230538812102 -3.27743787664758E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.00470405915888954" />
+      <inertia
+        ixx="4.04354136984597E-07"
+        ixy="-1.03821475556925E-13"
+        ixz="-2.30552686355161E-06"
+        iyy="2.19360476771906E-05"
+        iyz="-1.50852267974774E-13"
+        izz="2.15956327562071E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.250980392156863 0.250980392156863 0.250980392156863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Prop_1"
+    type="revolute">
+    <origin
+      xyz="-0.158911755493567 -0.158901065196916 0.0220213813396756"
+      rpy="1.5707963267949 0 0.903648152833205" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_1" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link_2">
+    <inertial>
+      <origin
+        xyz="-7.7275E-10 0.0076723 -3.9452E-10"
+        rpy="0 0 0" />
+      <mass
+        value="0.0047041" />
+      <inertia
+        ixx="4.0435E-07"
+        ixy="-1.1483E-14"
+        ixz="-2.3055E-06"
+        iyy="2.1936E-05"
+        iyz="-1.5799E-14"
+        izz="2.1596E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.25098 0.25098 0.25098 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Prop_2"
+    type="revolute">
+    <origin
+      xyz="-0.1589 0.15891 0.022021"
+      rpy="1.5708 0 2.482" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link_3">
+    <inertial>
+      <origin
+        xyz="-7.7275269516619E-10 0.00767229992917865 -3.94519181212694E-10"
+        rpy="0 0 0" />
+      <mass
+        value="0.00470406830199649" />
+      <inertia
+        ixx="4.04354441516238E-07"
+        ixy="-1.14825776412876E-14"
+        ixz="-2.30552691202119E-06"
+        iyy="2.19360479734661E-05"
+        iyz="-1.57990369376521E-14"
+        izz="2.15956330007586E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.250980392156863 0.250980392156863 0.250980392156863 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Prop_3"
+    type="revolute">
+    <origin
+      xyz="0.15891 0.1589 0.022021"
+      rpy="1.5708 0 -2.2726" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link_4">
+    <inertial>
+      <origin
+        xyz="5.6622E-09 0.0076723 2.8908E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.0047041" />
+      <inertia
+        ixx="4.0435E-07"
+        ixy="8.4136E-14"
+        ixz="-2.3055E-06"
+        iyy="2.1936E-05"
+        iyz="1.1576E-13"
+        izz="2.1596E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.25098 0.25098 0.25098 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Prop_4"
+    type="revolute">
+    <origin
+      xyz="0.1589 -0.15891 0.022021"
+      rpy="1.5708 0 2.4589" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.1416"
+      upper="3.1416"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link_5">
+    <inertial>
+      <origin
+        xyz="-9.59797575461331E-05 -0.014431253092325 0.0180822337821351"
+        rpy="0 0 0" />
+      <mass
+        value="0.147985066197072" />
+      <inertia
+        ixx="3.9569545183247E-05"
+        ixy="-1.14649538983322E-08"
+        ixz="1.070121637075E-07"
+        iyy="8.81564789827732E-05"
+        iyz="-7.16855624210717E-06"
+        izz="0.000112908251487362" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Oak_D"
+    type="fixed">
+    <origin
+      xyz="0 -0.064517 0.0028249"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_5" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="Link_6">
+    <inertial>
+      <origin
+        xyz="0.017837 0.015203 -2.2044E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.023906" />
+      <inertia
+        ixx="6.9383E-06"
+        ixy="-8.979E-09"
+        ixz="-4.4167E-09"
+        iyy="5.0428E-06"
+        iyz="-4.8301E-08"
+        izz="3.5255E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="LiDAR"
+    type="fixed">
+    <origin
+      xyz="-0.027588 0 -0.034175"
+      rpy="-1.5708 0 3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_6" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link_7">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://f450_base/meshes/Link_7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RPi_Camera"
+    type="fixed">
+    <origin
+      xyz="0.0037907 0 -0.07233"
+      rpy="3.1416 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_7" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>
