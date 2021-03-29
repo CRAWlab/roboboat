@@ -1,6 +1,7 @@
-# Hummingbird vehicle parameters
-mass: 0.716
-inertia: {xx: 0.007, xy: 0.0, xz: 0.0, yy: 0.007, yz: 0.0, zz: 0.012}
+# f450 vehicle parameters
+mass: 1.43508388852705
+inertia: {xx: 0.003034335338584, xy: 0.0, xz: 0.0, yy: 0.001496545528055, yz: 0.0, zz: 0.00381045049143025} 
+#{xx: 0.00303433533858399, xy: 0.0, xz: 0.0, yy: 0.00149654552805538, yz: 0.0, zz: 0.00381045049143025}
 
 # angle should be expressed in rad
 # direction 1 means counter clockwise, -1 clockwise

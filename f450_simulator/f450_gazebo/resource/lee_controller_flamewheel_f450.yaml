@@ -1,5 +1,17 @@
 # Lee position controller parameters
-position_gain: {x: 4, y: 4, z: 4}
-velocity_gain: {x: 2.2, y: 2.2, z: 2.2}
-attitude_gain: {x: 0.7, y: 0.7, z: 0.035}
-angular_rate_gain: {x: 0.1, y: 0.1, z: 0.025}
+position_gain: {x: 5, y: 5, z: 25}
+velocity_gain: {x: 13, y: 13, z: 22}
+attitude_gain: {x: 2.1, y: 2.1, z: 1.05}
+angular_rate_gain: {x: 0.45, y: .45, z: 0.1125}
+
+# What I found to be a launch, but it is not able to hold its position
+#position_gain: {x: 5, y: 5, z: 25}
+#velocity_gain: {x: 10, y: 10, z: 12.5}
+#attitude_gain: {x: 0.7, y: 0.7, z: 0.035}
+#angular_rate_gain: {x: 0.1, y: 0.1, z: 0.025}
+
+# Origional Lee position controller parameters
+#position_gain: {x: 4, y: 4, z: 4}
+#velocity_gain: {x: 2.2, y: 2.2, z: 2.2}
+#attitude_gain: {x: 0.7, y: 0.7, z: 0.035}
+#angular_rate_gain: {x: 0.1, y: 0.1, z: 0.025}
