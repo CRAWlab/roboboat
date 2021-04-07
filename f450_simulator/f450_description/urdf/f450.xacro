@@ -26,7 +26,7 @@ for Quadrocopter Control by Jian Wang et al.) -->
   <xacro:property name="rotor_velocity_slowdown_sim" value="10" />
   <xacro:property name="use_mesh_file" value="true" />
   <xacro:property name="mesh_file" value="package://rotors_description/meshes/base_link.STL" />
-  <xacro:property name="mass" value="1.43508388852705" /> <!-- [kg] -->
+  <xacro:property name="mass" value="1.92" /> <!-- [kg] -->
   <xacro:property name="body_width" value="0.4" /> <!-- [m] -->
   <xacro:property name="body_height" value="0.218" /> <!-- [m] -->
   <xacro:property name="mass_rotor" value="0.0124" /> <!-- [kg] -->
