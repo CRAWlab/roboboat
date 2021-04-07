@@ -1,10 +1,52 @@
 # Lee position controller parameters
 
+#Trial 16 - PERFECT
+position_gain: {x: 2, y: 2, z: 4}
+velocity_gain: {x: 2, y: 2, z: 5}
+attitude_gain: {x: 0.065, y: 0.065, z: 0.065}
+angular_rate_gain: {x: 0.03, y: 0.03, z: 0.03}
+
+#Trial 16
+#position_gain: {x: 2, y: 2, z: 4}
+#velocity_gain: {x: 2, y: 2, z: 5}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.1, y: 0.1, z: 0.11}
+
+#Trial 15
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.15}
+#angular_rate_gain: {x: 0.1, y: 0.1, z: 0.11}
+
+#Trial 14
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.1, y: 0.11, z: 0.11}
+
+#Trial 13
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.11, y: 0.11, z: 0.11}
+
+#Trial 12
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.1, y: 0.1, z: 0.1}
+
+#Trial 11
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.012, y: 0.011, z: 0.011}
+
 #Trial 10
-position_gain: {x: 2, y: 2, z: 3}
-velocity_gain: {x: 2, y: 2, z: 3}
-attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
-angular_rate_gain: {x: 0.011, y: 0.011, z: 0.011}
+#position_gain: {x: 2, y: 2, z: 3}
+#velocity_gain: {x: 2.5, y: 2, z: 3}
+#attitude_gain: {x: 0.14, y: 0.14, z: 0.14}
+#angular_rate_gain: {x: 0.011, y: 0.011, z: 0.011}
 
 #Trial 9 - f450_2021-04-01-17-44-31.bag
 #position_gain: {x: 2, y: 2, z: 3}
