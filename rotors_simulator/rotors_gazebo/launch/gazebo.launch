@@ -10,7 +10,7 @@
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-file $(find f450_base)/urdf/f450_base_sw.urdf -urdf -model f450_base"
+    args="-file $(find rotors_description)/urdf/f450_base.urdf -urdf -model f450_base"
     output="screen" />
   <node
     name="fake_joint_calibration"
