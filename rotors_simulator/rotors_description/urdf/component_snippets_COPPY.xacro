@@ -610,8 +610,8 @@
       image_width="1080"
       image_height="720"
       image_format="R8G8B8"
-      min_distance="0.08"
-      max_distance="30"
+      min_distance="0.02"
+      max_distance="${max_range}"
       noise_mean="0.0"
       noise_stddev="0.007"
       enable_visual="false"
@@ -655,7 +655,7 @@
     <gazebo reference="${namespace}/camera_${camera_suffix}_link">
       <sensor type="depth" name="${namespace}_camera_{camera_suffix}">
         <always_on>true</always_on>
-        <update_rate>30</update_rate>
+        <update_rate>${frame_rate}</update_rate>
         <camera>
           <horizontal_fov>2</horizontal_fov>
           <image>
@@ -664,15 +664,15 @@
             <height>720</height>
           </image>
           <clip>
-            <near>0.08</near>
-            <far>30</far>
+            <near>0.008</near>
+            <far>${max_range}</far>
           </clip>
         </camera>
         <plugin name="${namespace}_camera_{camera_suffix}" filename="libgazebo_ros_openni_kinect.so">
           <robotNamespace>${namespace}</robotNamespace>
           <alwaysOn>true</alwaysOn>
           <baseline>0.11</baseline>
-          <updateRate>30</updateRate>
+          <updateRate>${frame_rate}</updateRate>
           <cameraName>camera_${camera_suffix}</cameraName>
           <imageTopicName>camera/image_raw</imageTopicName>
           <cameraInfoTopicName>camera/camera_info</cameraInfoTopicName>
@@ -935,182 +935,10 @@
     </xacro:mavlink_interface_macro>
   </xacro:macro>
 
-
-<!-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--->
 <!-- OUR SENSORS -->
 
 <!-- Macro to add a LiDAR. -->
 
 <!-- Macro to add a rpi camera. -->
-  <!-- Macro to add a camera. -->
-  <xacro:macro name="vi1_sensor_camera_macro"
-    params="namespace parent_link frame_rate origin_offset_x baseline_y origin_offset_z max_range">
-    <xacro:camera_macro
-      namespace="${namespace}"
-      parent_link="${parent_link}"
-      camera_suffix="rpi"
-      frame_rate="30"
-      horizontal_fov="1.3962634"
-      image_width="1080"
-      image_height="720"
-      image_format="R8G8B8"
-      min_distance="0.08"
-      max_distance="30"
-      noise_mean="0.0"
-      noise_stddev="0.007"
-      enable_visual="true">
-      <mesh filename="package://rotors_description/meshes/link_7.STL" scale="1 1 1" />
-      <xacro:insert_block name="origin" />
-    </xacro:camera_macro>
-  </xacro:macro>
 
-  <!-- Macro to add a VI-sensor stereo camera. -->
-  <xacro:macro name="vi1_sensor_stereo_camera_macro"
-    params="namespace parent_link frame_rate origin_offset_x baseline_y origin_offset_z max_range">
-    <xacro:stereo_camera_macro
-      namespace="${namespace}"
-      camera_name="vi1_sensor"
-      parent_link="${parent_link}"
-      frame_rate="${frame_rate}"
-      horizontal_fov="1.3962634"
-      image_width="1080"
-      image_height="720"
-      image_format="R8G8B8"
-      min_distance="0.08"
-      max_distance="30"
-      noise_mean="0.0"
-      noise_stddev="0.007"
-      enable_visual="false"
-      origin_offset_x="${origin_offset_x}"
-      baseline_y="${baseline_y}"
-      origin_offset_z="${origin_offset_z}" >
-      <cylinder length="0.01" radius="0.007" />
-    </xacro:stereo_camera_macro>
-  </xacro:macro>
-
-  <!-- Macro to add a depth camera on the VI1-sensor. -->
-  <xacro:macro name="vi1_sensor_depth_macro"
-    params="namespace parent_link camera_suffix frame_rate max_range *origin">
-    <link name="${namespace}/camera_${camera_suffix}_link">
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <cylinder length="0.01" radius="0.007" />
-        </geometry>
-      </collision>
-      <inertial>
-        <mass value="1e-1000" />
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-      </inertial>
-    </link>
-    <joint name="${namespace}/camera_${camera_suffix}_joint" type="fixed">
-      <xacro:insert_block name="origin" />
-      <parent link="${parent_link}" />
-      <child link="${namespace}/camera_${camera_suffix}_link" />
-      <limit upper="0" lower="0" effort="0" velocity="0" />
-    </joint>
-    <!-- Optical center of camera -->
-    <link name="${namespace}/camera_${camera_suffix}_optical_center_link" />
-    <joint name="${namespace}/camera_${camera_suffix}_optical_center_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}" />
-      <parent link="${namespace}/camera_${camera_suffix}_link" />
-      <child link="${namespace}/camera_${camera_suffix}_optical_center_link" />
-      <limit upper="0" lower="0" effort="0" velocity="0" />
-    </joint>
-    <gazebo reference="${namespace}/camera_${camera_suffix}_link">
-      <sensor type="depth" name="${namespace}_camera_{camera_suffix}">
-        <always_on>true</always_on>
-        <update_rate>30</update_rate>
-        <camera>
-          <horizontal_fov>2</horizontal_fov>
-          <image>
-            <format>R8G8B8</format>
-            <width>1080</width>
-            <height>720</height>
-          </image>
-          <clip>
-            <near>0.08</near>
-            <far>30</far>
-          </clip>
-        </camera>
-        <plugin name="${namespace}_camera_{camera_suffix}" filename="libgazebo_ros_openni_kinect.so">
-          <robotNamespace>${namespace}</robotNamespace>
-          <alwaysOn>true</alwaysOn>
-          <baseline>0.11</baseline>
-          <updateRate>30</updateRate>
-          <cameraName>camera_${camera_suffix}</cameraName>
-          <imageTopicName>camera/image_raw</imageTopicName>
-          <cameraInfoTopicName>camera/camera_info</cameraInfoTopicName>
-          <depthImageTopicName>depth/disparity</depthImageTopicName>
-          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
-          <pointCloudTopicName>depth/points</pointCloudTopicName>
-          <frameName>camera_${camera_suffix}_optical_center_link</frameName>
-          <pointCloudCutoff>0.5</pointCloudCutoff>
-          <pointCloudCutoffMax>30</pointCloudCutoffMax>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
-        </plugin>
-      </sensor>
-    </gazebo>
-  </xacro:macro>
-
-  <!-- VI1-Sensor Macro -->
-  <xacro:macro name="vi1_sensor_macro" params="namespace parent_link enable_cameras *origin">
-    <!-- Vi1 Sensor Link -->
-    <link name="${namespace}/rpi_sensor_link">
-      <collision>
-        <origin xyz="0 0 0" rpy="0 1.570796327 0" />
-        <geometry>
-          <box size="0.03 0.03 0.057" />
-        </geometry>
-      </collision>
-
-      <visual>
-        <origin xyz="0 0 0" rpy="0 1.570796327 0" />
-        <geometry>
-          <mesh filename="package://rotors_description/meshes/link_7.STL" scale="1 1 1" />
-        </geometry>
-      </visual>
-
-      <inertial>
-        <mass value="1e-20" />
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
-      </inertial>
-    </link>
-    <joint name="${namespace}_vi1_sensor_joint" type="fixed">
-      <xacro:insert_block name="origin" />
-      <parent link="${parent_link}" />
-      <child link="${namespace}/rpi_sensor_link" />
-    </joint>
-    <!-- Cameras -->
-    <xacro:if value="${enable_cameras}">
-      <!-- Insert Camera. -->
-      <xacro:vi1_sensor_camera_macro
-        namespace="${namespace}" parent_link="${namespace}/rpi_sensor_link"
-        frame_rate="30.0" origin_offset_x="0.0" baseline_y="0.0"
-        origin_offset_z="0.0065" max_range="30.0">
-      </xacro:vi1_sensor_camera_macro>
-    </xacro:if>
-
-  </xacro:macro>
 </robot>

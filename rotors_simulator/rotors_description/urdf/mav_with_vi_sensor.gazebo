@@ -30,6 +30,6 @@
     enable_cameras="true"
     enable_depth="true"
     enable_ground_truth="true">
-    <origin xyz="0.0 0.1 -0.03" rpy="0.0 0.1 1.5" />
+    <origin xyz="0.0 0.08 0.16" rpy="0.0 0.34906585 1.570796327" />
   </xacro:vi_sensor_macro>
 </robot>

@@ -3,8 +3,8 @@
 #Trial 16 - PERFECT
 position_gain: {x: 2, y: 2, z: 4}
 velocity_gain: {x: 2, y: 2, z: 5}
-attitude_gain: {x: 0.1, y: 0.1, z: 0.07}
-angular_rate_gain: {x: 0.03, y: 0.03, z: 0.03}
+attitude_gain: {x: 0.11, y: 0.11, z: 0.07}
+angular_rate_gain: {x: 0.04, y: 0.04, z: 0.03}
 
 #Trial 16
 #position_gain: {x: 2, y: 2, z: 4}

@@ -162,5 +162,25 @@ for Quadrocopter Control by Jian Wang et al.) -->
     <xacro:insert_block name="rotor_inertia" />
   </xacro:vertical_rotor>
 
+<!-- Creating Our Own Sensors -->
+  <!-- Mount a VI-sensor (OAK-D) in front of the F450 -->
+  <xacro:vi_sensor_macro
+    namespace="${namespace}/vi_sensor"
+    parent_link="${namespace}/base_link"
+    enable_cameras="true"
+    enable_depth="true"
+    enable_ground_truth="true">
+    <origin xyz="0.0 0.08 0.16" rpy="0.0 0.34906585 1.570796327" />
+  </xacro:vi_sensor_macro>
 
+  <!-- Mount a LiDAR on the Side of the F450 -->
+  
+  <!-- Mount a Raspberry Pi Camera on the Bottom of the F450 -->
+  <xacro:vi1_sensor_macro
+    namespace="${namespace}/vi1_sensor"
+    parent_link="${namespace}/base_link"
+    enable_cameras="true"
+    >
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </xacro:vi1_sensor_macro>
 </robot>
