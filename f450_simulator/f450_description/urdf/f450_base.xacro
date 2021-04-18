@@ -20,7 +20,7 @@
 -->
 
 <robot name="f450" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:include filename="$(find rotors_description)/urdf/component_snippets.xacro" />
+  <xacro:include filename="$(find f450_description)/urdf/component_snippets.xacro" />
   <!-- Instantiate FlameWheel_F450 "mechanics" -->
   <xacro:include filename="$(find rotors_description)/urdf/f450.xacro" />
 

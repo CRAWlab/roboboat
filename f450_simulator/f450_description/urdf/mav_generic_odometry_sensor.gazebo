@@ -21,7 +21,7 @@
 
 <robot name="$(arg mav_name)" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Instantiate the mav-->
-  <xacro:include filename="$(find rotors_description)/urdf/$(arg mav_name)_base.xacro" />
+  <xacro:include filename="$(find f450_description)/urdf/$(arg mav_name)_base.xacro" />
 
   <!-- Mount a generic odometry sensor without odometry map (working everywhere). -->
   <xacro:odometry_plugin_macro
