@@ -41,4 +41,7 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   </group>
+
+<node pkg="tf" type="static_transform_publisher" name="lidar_lite_v3hp" args="1 0 0 0 0 0 1 f450/base_link f450/lidar_lite_v3hp 100" />
+
 </launch>
