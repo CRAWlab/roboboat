@@ -67,9 +67,9 @@
       </visual>
 
       <collision>
-        <origin xyz="0 0 0.1" rpy="0 0 3.14" />
+        <origin xyz="0 0 0.12" rpy="0 0 3.14" />
         <geometry>
-          <box size="${body_width} ${body_width} ${body_height}" /> <!-- [m] [m] [m] -->
+            <mesh filename="${mesh_file}" scale="1 1 1" />
         </geometry>
       </collision>
     </link>

@@ -53,7 +53,6 @@ for Quadrocopter Control by Jian Wang et al.) -->
   -->
 
 
-
   <!-- inertia of a single rotor, assuming it is a cuboid. Height=3mm, width=15mm -->
   <xacro:property name="rotor_inertia">
     <xacro:box_inertia x="${radius_rotor}" y="0.015" z="0.003" mass="${mass_rotor*rotor_velocity_slowdown_sim}" />
@@ -164,23 +163,79 @@ for Quadrocopter Control by Jian Wang et al.) -->
 
 <!-- Creating Our Own Sensors -->
   <!-- Mount a VI-sensor (OAK-D) in front of the F450 -->
-  <xacro:vi_sensor_macro
-    namespace="${namespace}/vi_sensor"
+  <xacro:oak_d_sensor_macro
+    namespace="${namespace}/oak_d_sensor"
     parent_link="${namespace}/base_link"
     enable_cameras="true"
     enable_depth="true"
     enable_ground_truth="true">
     <origin xyz="0.0 0.08 0.16" rpy="0.0 0.34906585 1.570796327" />
-  </xacro:vi_sensor_macro>
+  </xacro:oak_d_sensor_macro>
 
-  <!-- Mount a LiDAR on the Side of the F450 -->
-  
+  <!-- Mount LiDAR in front of the F450 -->
+  <joint name="lidar_lite_v3hp_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="-0.04 0.02 0.071" rpy="1.570796327 1.570796327 0"/>
+    <parent link="${namespace}/base_link"/>
+    <child link="lidar_lite_v3hp"/>
+  </joint>
+  <!-- LiDAR Lite V3HP Laser -->
+  <link name="lidar_lite_v3hp">
+    <collision>
+      <origin xyz="-0.04 0.02 0.02" rpy="0 0 4.71238898"/>
+      <geometry>
+        <mesh filename="package://rotors_description/meshes/link_5.STL"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.04 0.02 0.02" rpy="0 0 4.71238898"/>
+      <geometry>
+        <mesh filename="package://rotors_description/meshes/link_5.STL"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-20" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <!-- Might be an alternate option
+  <xacro:include filename="lidar.xacro"/>
+  <joint name="lidarGlue" type="fixed">
+    <parent link="${namespace}/base_link"/>
+    <child link="laz_base"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0" />
+  </joint>
+  -->
   <!-- Mount a Raspberry Pi Camera on the Bottom of the F450 -->
-  <xacro:vi1_sensor_macro
-    namespace="${namespace}/vi1_sensor"
+  <xacro:rpi_sensor_macro
+    namespace="${namespace}/rpi_sensor"
     parent_link="${namespace}/base_link"
-    enable_cameras="true"
-    >
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
-  </xacro:vi1_sensor_macro>
+    enable_cameras="true">
+    <origin xyz="0.0 0.0 0.083" rpy="1.570796327 1.570796327 1.570796327" />
+  </xacro:rpi_sensor_macro>
+
+  <!-- Other Camera -->
+  <!--
+  <xacro:camera_macro
+    namespace="${namespace}"
+    parent_link="${namespace}/base_link"
+    camera_suffix="left"
+    frame_rate="30"
+    horizontal_fov="2"
+    image_width="1080"
+    image_height="720"
+    image_format="R8G8B8"
+    min_distance="1"
+    max_distance="50"
+    noise_mean="0.0"
+    noise_stddev="0.007"
+    enable_visual="true">
+    <box size="0.02 0.05 0.05" />
+    <origin xyz="${arm_length/3} 0 0" rpy="0 0 0" />
+  </xacro:camera_macro>
+  -->
 </robot>
