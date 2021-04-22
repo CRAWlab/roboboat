@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# StateMachine for the ASV and UAV for teh CRAWLABs ASV and UAV. 
+# StateMachine for the ASV and UAV for the CRAWLAB
 
 import rospy
 import smach
