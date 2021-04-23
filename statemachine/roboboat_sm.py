@@ -8,8 +8,8 @@ import smach_ros
 from smach_ros import SimpleActionState
 from smach import Concurrence
 
-## State finding navigation channel  ###############################################
-class find_NavChan_start(smach.State):
+## State finding navigation channel  ################################################
+class find_NavChan_start(smach.State):  # Looking for the red and green buoy and the gps coordinate 
     def __init__(self):
         smach.State.__init__(self, outcomes = ['found', 'not_found'])
         self.counter = 0
@@ -61,17 +61,6 @@ class cannot_find_middle_NavChan(smach.State):
             return 'back_to_find_middle'
 ####################################################################################
 
-
-# ## State to stay straight through the navigation channel #########################
-# class passthrough(smach.State):
-#     def __init__(self):
-#         smach.State.__init__(self, outcomes= ['passing'])
-
-#     def execute(self, userdata): #All code for passing through goes here
-#             rospy.loginfo('Passing through')
-#             return 'passing'
-# ##################################################################################
-
 ## State for checking distance to  buoy  ###########################################
 class NavChan_distance_checking(smach.State):
     def __init__(self):
@@ -108,7 +97,7 @@ class passing_through_NavChan(smach.State):
 
     def execute(self, userdata): #All code for passing through goes here
             rospy.loginfo('Passing through')
-            return 'passing_through_NavhChan'
+            return 'passing_through_NavChan'
 ####################################################################################
 
 #################################    Obstacle channel    ###########################
@@ -198,13 +187,99 @@ class back_to_distance_checking_ObChan(smach.State):
 
 
 ## State to stay straight through the Obstacle channel ###########################
-class passing_through_ObChan_buoy(smach.State):
+class passing_through_ObChan_buoys(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes= ['passing_through_ObChan_buoy'])
+        smach.State.__init__(self, outcomes= ['passing_through_ObChan_buoys'])
 
     def execute(self, userdata): #All code for passing through goes here
             rospy.loginfo('Passing through')
-            return 'passing_through_ObChan_buoy'
+            return 'passing_through_ObChan_buoys'
+####################################################################################
+
+## State to exit the obstacle channel   ############################################
+class exiting_ObChan(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes= ['exiting_ObChan'])
+
+    def execute(self, userdata): #All code for passing through goes here
+            rospy.loginfo('Exiting the Obstacle Channel')
+            return 'exiting_ObChan'
+####################################################################################
+
+#################################   Obstacle Field   ###############################
+####################################################################################
+####################################################################################
+
+## State to find the obstacle field ################################################
+class find_ObField(smach.State): ##Looking for the pill buoy
+    def __init__(self):
+        smach.State.__init__(self, outcomes = ['found', 'not_found'])
+        self.counter = 0
+
+    def execute(self, userdata): #This is where all the code for finding the navigation channel goes looking for GPS coordinate and trying to find the two larger buoys
+            rospy.loginfo('Finding Obstacle Field')
+            if self.counter < 3:
+                    self.counter += 1
+                    rospy.loginfo('Obstacle Field not found')
+                    return 'not_found'
+            else:
+                    return 'found'
+####################################################################################
+
+## State that could not find the obstacle field still looking ######################
+class cannot_find_ObField(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes= ['back_to_find_ObField'])
+
+    def execute(self, userdata):
+            rospy.loginfo('Cannot find Obstacle Field')
+            return 'back_to_find_ObField'
+####################################################################################
+
+## State to find the opening in the obstacle field #################################
+class locate_ObField_opening(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['found_opening', 'no_opening'])
+        self.counter = 0
+
+    def execute(self, userdata):
+            rospy.loginfo('Still circling obstacle field')
+            if self.counter < 2:
+                    self.counter += 1
+                    rospy.loginfo('Obstacle Field entrance not found')
+                    return 'no_opening'
+            else:
+                    return 'found_opening'
+####################################################################################
+
+## State to return to locating the opening in the obstacle field####################
+class back_to_locate_ObField_opening(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes= ['back_to_locate_ObField_opening'])
+
+    def execute(self, userdata): 
+        rospy.loginfo('Searching for opening')
+        return 'back_to_locate_ObField_opening'
+####################################################################################
+
+## State to find the opening in the obstacle field #################################
+class locate_pill_buoy(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['found_pill_buoy'])
+
+    def execute(self, userdata):
+            rospy.loginfo('Searching for pill buoy')
+            return 'found_pill_buoy'
+####################################################################################
+
+## State to find the opening in the obstacle field #################################
+class circle_pill_buoy(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['circling'])
+
+    def execute(self, userdata):
+            rospy.loginfo('Searching for pill buoy')
+            return 'circling'
 ####################################################################################
 
 
@@ -231,7 +306,7 @@ def main():
 
         smach.StateMachine.add('passing_through_NavChan', passing_through_NavChan(), {'passing_through_NavChan':'find_ObChan_start'})
 
-        ####################### Starting the Obstacle channel Containers ########################################
+        ####################### Starting the Obstacle channel Containers #######################################
         ########################################################################################################
 
         smach.StateMachine.add('find_ObChan_start', find_ObChan_start(), transitions= {'not_found':'cannot_find_ObChan', 'found':'find_middle_ObChan'})
@@ -242,11 +317,31 @@ def main():
 
         smach.StateMachine.add('cannot_find_middle_ObChan', cannot_find_middle_ObChan(), transitions= {'back_to_find_middle_ObChan':'find_middle_ObChan'})
 
-        smach.StateMachine.add('ObChan_distance_checking', ObChan_distance_checking(), transitions= { 'go_starboard':'back_to_distance_checking_ObChan', 'go_port':'back_to_distance_checking_ObChan', 'go_straight':'passing_through_ObChan_buoy'})
+        smach.StateMachine.add('ObChan_distance_checking', ObChan_distance_checking(), transitions= { 'go_starboard':'back_to_distance_checking_ObChan', 'go_port':'back_to_distance_checking_ObChan', 'go_straight':'passing_through_ObChan_buoys'})
 
         smach.StateMachine.add('back_to_distance_checking_ObChan', back_to_distance_checking_ObChan(), transitions= {'back_to_distance_checking_ObChan':'ObChan_distance_checking'})
 
-        smach.StateMachine.add('passing_through_ObChan_buoy', passing_through_ObChan_buoy(), {'passing_through_ObChan_buoy':'finished'})
+        smach.StateMachine.add('passing_through_ObChan_buoys', passing_through_ObChan_buoys(), transitions={'passing_through_ObChan_buoys':'exiting_ObChan'})
+
+        smach.StateMachine.add('exiting_ObChan', exiting_ObChan(), transitions= {'exiting_ObChan':'find_ObField'})
+
+        ####################### Starting the Obstacle Field Containers #######################################
+        ########################################################################################################
+
+        smach.StateMachine.add('find_ObField', find_ObField(), transitions= {'not_found':'cannot_find_ObField', 'found':'locate_ObField_opening'})
+
+        smach.StateMachine.add('cannot_find_ObField', cannot_find_ObField(), transitions={'back_to_find_ObField':'find_ObField'})
+
+        smach.StateMachine.add('locate_ObField_opening', locate_ObField_opening(), transitions={'found_opening':'locate_pill_buoy', 'no_opening':'back_to_locate_ObField_opening'})
+
+        smach.StateMachine.add('back_to_locate_ObField_opening', back_to_locate_ObField_opening(), transitions={'back_to_locate_ObField_opening':'locate_ObField_opening'})
+
+        smach.StateMachine.add('locate_pill_buoy', locate_pill_buoy(), transitions={'found_pill_buoy':'circle_pill_buoy'})
+
+        smach.StateMachine.add('circle_pill_buoy', circle_pill_buoy(), transitions={'circling':'finished'})
+
+
+
 
 # This allows you to view the state machine in a graph format 
     sis = smach_ros.IntrospectionServer('statemach_viewer', sm, '/Start Competition Run')
