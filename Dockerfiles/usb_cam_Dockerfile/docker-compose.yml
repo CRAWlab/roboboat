@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  master:
+    image: ros:melodic-ros-base-raspicamv.1
+    container_name: master
+    ports:
+      - 11311:11311
+    devices:
+      - "/dev/video0:/dev/video0"
+    privileged: true
+    command: roslaunch usb_cam usb_cam-test.launch  #zeroconf:=false
+
+  rosbagrecord:
+    image: ros:melodic-ros-base-raspicamv.1
+    container_name: rosbagrecorder
+    environment:
+      - "ROS_HOSTNAME=rosbagrecord"
+      - "ROS_MASTER_URI=http://master:11311"
+    volumes:
+        - /home/pi/BagData:/home/Test_Bag_Files
+    command: rosbag record -a --output-name=/home/Test_Bag_Files/TestBag_2021_04_11.bag --split --size=4000

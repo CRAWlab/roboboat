@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  master:
+    image: ros:melodic-mavros-mavlink
+    container_name: master
+    ports:
+      - 11311:11311
+    network_mode: "host"
+    devices:
+      - "/dev/video0:/dev/video0"
+      - "/dev/ttyAMA0:/dev/ttyAMA0"    
+    privileged: true
+    command: roscore  #zeroconf:=false
+
+  conecttoqgc:
+    image: ros:melodic-mavros-mavlink
+    container_name: UAV_companion
+    environment:
+      - "ROS_HOSTNAME=master"
+      - "ROS_MASTER_URI=http://uav-roboboat-pi:11311"
+    devices:
+      - "/dev/video0:/dev/video0"
+      - "/dev/ttyAMA0:/dev/ttyAMA0"
+    volumes:
+        - /home/pi/src:/src:rw
+    command: rosrun mavros mavros_node _fcu_url:=/dev/ttyAMA0:921600 _gcs_url:=udp://@192.168.143.232
