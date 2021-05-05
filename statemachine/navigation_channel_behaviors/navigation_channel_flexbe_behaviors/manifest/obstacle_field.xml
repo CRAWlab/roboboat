@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Obstacle_field">
+
+	<executable package_path="navigation_channel_flexbe_behaviors.obstacle_field_sm" class="Obstacle_fieldSM" />
+	<tagstring></tagstring>
+	<author>Gerald</author>
+	<date>Sat Jun 20 2020</date>
+	<description>
+		Complete the obstacle field task
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

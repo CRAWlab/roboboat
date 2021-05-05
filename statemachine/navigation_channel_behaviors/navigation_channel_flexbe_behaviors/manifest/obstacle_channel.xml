@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Obstacle_channel">
+
+	<executable package_path="navigation_channel_flexbe_behaviors.obstacle_channel_sm" class="Obstacle_channelSM" />
+	<tagstring></tagstring>
+	<author>Gerald</author>
+	<date>Thu Jun 18 2020</date>
+	<description>
+		Navigate roboboat through the obstacle channel while avoiding collisions
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
