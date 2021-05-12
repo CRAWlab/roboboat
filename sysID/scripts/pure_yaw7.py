@@ -16,7 +16,7 @@ try:
             move_cmd.linear.x = 0
             move_cmd.linear.y = 0
             # assign the angular velocity command
-            move_cmd.angular.z = 7.2
+            move_cmd.angular.z = 2*np.pi/5
             #stop moving after 60seconds
             if seq>600:
                 move_cmd.linear.x = 0
