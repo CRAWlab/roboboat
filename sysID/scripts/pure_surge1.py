@@ -28,4 +28,4 @@ try:
             cmd_vel.publish(move_cmd)
             seq+=1
 except (KeyboardInterrupt, SystemExit):
-    cmd_vel.publish(move_cmd) # publish all zeros to stop
+    cmd_vel.publish(Twist()) # publish all zeros to stop
