@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import rospy
+import numpy
 from geometry_msgs.msg import Twist
 # Initialize the node
 rospy.init_node('sysID_vel_commands_yaw7', anonymous=True)
@@ -28,4 +29,4 @@ try:
             cmd_vel.publish(move_cmd)
             seq+=1
 except (KeyboardInterrupt, SystemExit):
-    cmd_vel.publish(move_cmd) # publish all zeros to stop
+    cmd_vel.publish(Twist()) # publish all zeros to stop
