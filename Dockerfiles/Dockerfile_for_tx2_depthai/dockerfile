@@ -55,10 +55,8 @@ RUN mkdir ros_catkin_ws && \
     python3 ./src/catkin/bin/catkin_make_isolated --install --install-space ${ROS_ROOT} -DCMAKE_BUILD_TYPE=Release && \
     rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip depthai \
+RUN python3 -m pip install depthai \
     rm -rf /var/lib/apt/lists/*
-
-
 
 # setup entrypoint
 COPY ./packages/ros_entrypoint.sh /ros_entrypoint.sh
