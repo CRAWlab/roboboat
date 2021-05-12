@@ -71,10 +71,29 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
-   scripts/pure_surge1.py
-   scripts/pure_sway1.py
-   scripts/pure_yaw7.py
-   scripts/zigzag_1_7.py
+   nodes/pure_surge0_5.py
+   nodes/pure_surge0_75.py
+   nodes/pure_surge1.py
+   nodes/pure_surge1_25.py
+   nodes/pure_surge1_5.py
+   nodes/pure_surge2.py
+   
+   nodes/pure_sway0_5.py
+   nodes/pure_sway0_75.py
+   nodes/pure_sway1.py
+   nodes/pure_sway1_25.py
+   nodes/pure_sway1_5.py
+   nodes/pure_sway2.py
+
+   nodes/pure_yaw20.py
+   nodes/pure_yaw30.py
+   nodes/pure_yaw40.py
+   nodes/pure_yaw60.py
+   nodes/pure_yaw72.py
+   nodes/pure_yaw80.py
+
+   nodes/zigzag_1_60.py
+   nodes/zigzag_1_90.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
