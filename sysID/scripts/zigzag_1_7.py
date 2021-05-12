@@ -17,9 +17,9 @@ seq=0
 
 
 desired_surge_vel=1
-#complete 180 turn in 2.5 seconds
+#complete 180 turn in 2 seconds
 time2turn=2 
-desired_yaw_vel=np.pi/time2turn      #7.2 degrees/sec
+desired_yaw_vel=np.pi/time2turn      
 turnsteps=int(time2turn/time_step)
 turndirection=1
 
@@ -44,22 +44,22 @@ for ii in range(0,10):
 vels[-int(2/time_step):,2]=np.pi/4
 
 
-
-while not rospy.is_shutdown():        
-        # assign the translational velocity commands
-        move_cmd.linear.x = vels[seq,0]
-        move_cmd.linear.y = vels[seq,1]
-        # assign the angular velocity command
-        move_cmd.angular.z = vels[seq,2]
-        #stop commands after path complete
-        if seq>=len(vels[0]):
-            move_cmd.linear.x = 0
-            move_cmd.linear.y = 0
-            move_cmd.angular.z = 0
-        # Then publish it
-        cmd_vel.publish(move_cmd)
-        rate.sleep()
-        cmd_vel.publish(move_cmd)
-        seq+=1
+try:
+    while not rospy.is_shutdown():        
+            # assign the translational velocity commands
+            move_cmd.linear.x = vels[seq,0]
+            move_cmd.linear.y = vels[seq,1]
+            # assign the angular velocity command
+            move_cmd.angular.z = vels[seq,2]
+            #stop commands after path complete
+            if seq>=len(vels[0]):
+                move_cmd.linear.x = 0
+                move_cmd.linear.y = 0
+                move_cmd.angular.z = 0
+            # Then publish it
+            cmd_vel.publish(move_cmd)
+            rate.sleep()
+            cmd_vel.publish(move_cmd)
+            seq+=1
 except (KeyboardInterrupt, SystemExit):
-    cmd_vel.publish(twist()) # publish all zeros to stop
+    cmd_vel.publish(Twist()) # publish all zeros to stop
