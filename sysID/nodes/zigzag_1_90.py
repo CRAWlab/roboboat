@@ -3,7 +3,7 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
 # Initialize the node
-rospy.init_node('sysID_vel_commands_zigzag', anonymous=True)
+rospy.init_node('sysID_vel_commands', anonymous=True)
 # Create a publisher to publish cmd_vel tell it to move
 cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=0)
 # 10 Hz update rate - update to match your setup

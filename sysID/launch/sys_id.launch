@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--
+Author: Adam Smith
+launch file for roboboat_sys_id nodes
+
+    -->
+    <launch>
+
+    <!-- define launch arguments to decide on which node to run-->
+    <arg name="test"/>
+    <param name="test_name" value"$(arg test)"/>
+   <group if="$(eval arg('test') ==pure_surge0_5 )">
+        <node pkg="roboboat_sys_id" type="pure_surge0_5.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_surge0_75 )">
+        <node pkg="roboboat_sys_id" type="pure_surge0_75.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_surge1 )">
+        <node pkg="roboboat_sys_id" type="pure_surge1.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_surge1_25 )">
+        <node pkg="roboboat_sys_id" type="pure_surge1_25.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_surge1_5 )">
+        <node pkg="roboboat_sys_id" type="pure_surge1_5.py" name="$(anon sysID_vel_commands)" />
+   </group>  
+   <group if="$(eval arg('test') ==pure_surge2 )">
+        <node pkg="roboboat_sys_id" type="pure_surge2.py" name="$(anon sysID_vel_commands)" />
+   </group>   
+   <group if="$(eval arg('test') ==pure_sway0_5 )">
+        <node pkg="roboboat_sys_id" type="pure_sway0_5.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_sway0_75 )">
+        <node pkg="roboboat_sys_id" type="pure_sway0_75.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_sway1 )">
+        <node pkg="roboboat_sys_id" type="pure_sway1.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_sway1_25 )">
+        <node pkg="roboboat_sys_id" type="pure_sway1_25.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_sway1_5 )">
+        <node pkg="roboboat_sys_id" type="pure_sway1_5.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_sway2 )">
+        <node pkg="roboboat_sys_id" type="pure_sway2.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw20 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw20.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw30 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw30.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw40 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw40.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw60 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw60.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw72 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw72.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==pure_yaw80 )">
+        <node pkg="roboboat_sys_id" type="pure_yaw80.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==zigzag_1_60 )">
+        <node pkg="roboboat_sys_id" type="zigzag_1_60.py" name="$(anon sysID_vel_commands)" />
+   </group>
+   <group if="$(eval arg('test') ==zigzag_1_90 )">
+        <node pkg="roboboat_sys_id" type="zigzag_1_90.py" name="$(anon sysID_vel_commands)" />
+   </group>
+</launch>
