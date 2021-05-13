@@ -94,6 +94,11 @@ launch file for roboboat_sys_id nodes
    <group if="$(eval arg('test') ==pure_yaw80 )">
         <node pkg="roboboat_sys_id" type="pure_yaw80.py" name="$(anon sysID_vel_commands)" />
    </group>
+
+   <group if="$(eval arg('test') ==zigzag_0_5_90 )">
+        <node pkg="roboboat_sys_id" type="zigzag_1_90.py" name="$(anon sysID_vel_commands)" />
+   </group>
+
    <group if="$(eval arg('test') ==zigzag_1_60 )">
         <node pkg="roboboat_sys_id" type="zigzag_1_60.py" name="$(anon sysID_vel_commands)" />
    </group>

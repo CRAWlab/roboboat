@@ -101,6 +101,7 @@ install(PROGRAMS
    nodes/pure_yaw72.py
    nodes/pure_yaw80.py
 
+   nodes/zigzag_0_5_60.py
    nodes/zigzag_1_60.py
    nodes/zigzag_1_90.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
