@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>sysID</name>
+  <name>roboboat_sys_id</name>
   <version>0.0.0</version>
   <description>system Identification package</description>
 

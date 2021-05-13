@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sysID)
+project(roboboat_sys_id)
 
 
 find_package(catkin REQUIRED COMPONENTS
@@ -46,7 +46,7 @@ catkin_python_setup()
 ###################################
 
 catkin_package(
-  LIBRARIES sysID
+  LIBRARIES roboboat_sys_id
   CATKIN_DEPENDS rospy geometry_msgs numpy
 )
 
