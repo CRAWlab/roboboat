@@ -71,20 +71,29 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
+   nodes/pure_surge0_4.py
    nodes/pure_surge0_5.py
+   nodes/pure_surge0_6.py
    nodes/pure_surge0_75.py
+   nodes/pure_surge0_8.py
    nodes/pure_surge1.py
    nodes/pure_surge1_25.py
    nodes/pure_surge1_5.py
    nodes/pure_surge2.py
    
+   nodes/pure_sway0_4.py
    nodes/pure_sway0_5.py
+   nodes/pure_sway0_6.py
    nodes/pure_sway0_75.py
+   nodes/pure_sway0_8.py
    nodes/pure_sway1.py
    nodes/pure_sway1_25.py
    nodes/pure_sway1_5.py
    nodes/pure_sway2.py
 
+
+   nodes/pure_yaw10.py
+   nodes/pure_yaw15.py
    nodes/pure_yaw20.py
    nodes/pure_yaw30.py
    nodes/pure_yaw40.py
