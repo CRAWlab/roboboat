@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import rospy
-import numpy
+import numpy as np
 from geometry_msgs.msg import Twist
 # Initialize the node
 rospy.init_node('sysID_vel_commands', anonymous=True)
