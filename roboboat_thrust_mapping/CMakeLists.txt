@@ -13,6 +13,7 @@ catkin_python_setup()
 catkin_install_python(PROGRAMS
   nodes/roboboat_thrust_mapping.py
   nodes/roboboat_raw_throttle_test.py
+  nodes/roboboat_navio_thrust.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

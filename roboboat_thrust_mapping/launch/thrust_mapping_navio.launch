@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="roboboat_thrust_mapping" pkg="roboboat_thrust_mapping" type="roboboat_navio_thrust.py" respawn="false" output="screen">
+  </node>
+
+</launch>
