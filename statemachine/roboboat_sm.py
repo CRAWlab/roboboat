@@ -423,10 +423,10 @@ def main():
     rospy.init_node('roboboatStateMachine')
 
     # Create a SMACH state machine
-    TOP_sm = smach.StateMachine(outcomes=['finished'])
+    sm_top = smach.StateMachine(outcomes=['finished'])
     # uav_sm = smach.StateMachine(outcomes=['uav_finished'])
     # Open the container
-    with TOP_sm:
+    with sm_top:
        # rospy.init_node('smach_roboboat_state_machine')
         
         # Navigation Containers
@@ -483,9 +483,9 @@ def main():
         ####################### Starting UAV SUB statemachine ################################################
         ######################################################################################################
 
-        SUB_sm = smach.StateMachine(outcomes=['uav_finished'])
+        sm_sub = smach.StateMachine(outcomes=['uav_finished'])
 
-        with SUB_sm:
+        with sm_sub:
 
             smach.StateMachine.add('launching', launching(), transitions= {'cannot_launch':'back_to_launching', 'launching':'UAV_hovering'})
 
@@ -508,18 +508,18 @@ def main():
             smach.StateMachine.add('circling_ObField', circling_ObField(), transitions={'circling_ObField':'uav_finished'})
 
 # This allows you to view the state machine in a graph format 
-    TOP_main = smach_ros.IntrospectionServer('ASV_viewer', TOP_sm, '/Start Competition Run')
-    TOP_main.start()
+    top = smach_ros.IntrospectionServer('ASV_viewer', sm_top, '/Start Competition Run')
+    top.start()
     
-    SUB_main = smach_ros.IntrospectionServer('UAV_Viewer', SUB_sm, '/View UAV States')
-    SUB_main.start()
+    sub = smach_ros.IntrospectionServer('UAV_Viewer', sm_sub, '/View UAV States')
+    sub.start()
 
     # Execute SMACH plan
-    outcome = TOP_sm.execute()
-    outcome = SUB_sm.execute()
+    outcome = sm_top.execute()
+    outcome = sm_sub.execute()
     rospy.spin()  ## Allows for the node to stay active until clt+c is pressed
-    TOP_main.stop()    ## 
-    SUB_main.stop()
+    top.stop()    ## 
+    sub.stop()
 
 
 if __name__ == '__main__':
