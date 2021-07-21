@@ -23,6 +23,17 @@ try:
                 move_cmd.linear.y = 0
                 move_cmd.angular.z = 0
             # Then publish it
+            if seq<10:
+                move_cmd.linear.x = 0
+                move_cmd.linear.y = 0
+                move_cmd.linear.z = 0
+                move_cmd.angular.z = 0
+                move_cmd.angular.y = 0
+                move_cmd.angular.x = 0
+            if 10<seq<20:
+                move_cmd.linear.x = .5*(seq/20)
+                move_cmd.linear.y = 0
+                move_cmd.angular.z = 0
             cmd_vel.publish(move_cmd)
             rate.sleep()
             cmd_vel.publish(move_cmd)

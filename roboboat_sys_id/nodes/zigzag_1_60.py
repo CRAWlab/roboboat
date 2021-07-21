@@ -45,7 +45,10 @@ vels[-int(2/time_step):,2]=np.pi/4
 
 
 try:
-    while not rospy.is_shutdown():        
+    while not rospy.is_shutdown():  
+            #ramp up speed over 1st second 
+            if seq<10:
+                vels=vels*seq/10     
             # assign the translational velocity commands
             move_cmd.linear.x = vels[seq,0]
             move_cmd.linear.y = vels[seq,1]
