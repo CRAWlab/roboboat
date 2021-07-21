@@ -1,0 +1,17 @@
+<package format="2">
+  <name>roboboat_thrust_mapping</name>
+  <version>0.0.1</version>
+  <description>Package that provides basic thrust mapping for the RoboBoat. It maps cmd_vel messages to raw thruster commands.</description>
+
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+
+  <author>Joshua Vaughan</author>
+
+  <license>TODO</license>
+
+  <url type="website"></url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  
+</package>

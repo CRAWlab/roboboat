@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="roboboat_navio_gps" pkg="roboboat_navio_data" type="roboboat_navio_gps.py" respawn="false" output="screen">
+  </node>
+
+  <node name="roboboat_navio_imu" pkg="roboboat_navio_data" type="roboboat_navio_imu.py" respawn="false" output="screen">
+  </node>
+
+</launch>

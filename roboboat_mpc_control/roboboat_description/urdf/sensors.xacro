@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+
+<!--
+
+\file sensors.xacro
+
+TODO:
+* Adjust base_link dummy frame's inertia. Izz should be close from hand calculations
+* Check COG sign and magnitude. Will likely be unknown until new enclosure is mounted and we measure new draft
+
+Modified:
+*
+
+This file is based of the following:
+Software License Agreement (BSD)
+
+\file      sensors.xacro
+\authors   Guy Stoppi <gstoppi@clearpathrobotics.com>
+\copyright Copyright (c) 2018, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- GPS -->
+  <gazebo>
+    <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
+      <updateRate>40</updateRate>
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <frameId>$(arg suffix_ns)navsat_link</frameId>
+      <bodyName>$(arg suffix_ns)navsat_link</bodyName>
+      <topicName>/$(arg suffix_ns)navsat/fix</topicName>
+      <velocityTopicName>/$(arg suffix_ns)navsat/velocity</velocityTopicName>
+      <referenceLatitude>49.9</referenceLatitude>
+      <referenceLongitude>8.9</referenceLongitude>
+      <referenceHeading>90</referenceHeading>
+      <referenceAltitude>0</referenceAltitude>
+      <drift>0.0001 0.0001 0.0001</drift>
+    </plugin>
+  </gazebo>
+  <link name="$(arg suffix_ns)navsat_link" />
+
+  <joint name="navsat_joint" type="fixed">
+    <parent link="$(arg suffix_ns)base_link" />
+    <child link="$(arg suffix_ns)navsat_link" />
+    <origin xyz="$(optenv ROBOBOAT_NAVSAT_UBLOX_XYZ 0.015 0.050 0.072)"
+      rpy="$(optenv ROBOBOAT_NAVSAT_UBLOX_RPY 0.0 0.0 0.0)" />
+    </joint>
+
+
+  <!-- IMU -->
+  <gazebo>
+    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <updateRate>50.0</updateRate>
+      <bodyName>$(arg suffix_ns)imu_link</bodyName>
+      <frameId>$(arg suffix_ns)imu_link</frameId>
+      <topicName>/$(arg suffix_ns)imu/data_raw</topicName>
+      <accelDrift>0.005 0.005 0.005</accelDrift>
+      <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
+      <rateDrift>0.005 0.005 0.005 </rateDrift>
+      <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+      <headingDrift>0.005</headingDrift>
+      <headingGaussianNoise>0.005</headingGaussianNoise>
+    </plugin>
+  </gazebo>
+
+  <link name="$(arg suffix_ns)imu_link" />
+  <joint name="$(arg suffix_ns)imu_joint" type="fixed">
+    <origin xyz="$(optenv ROBOBOAT_IMU_UM6_XYZ -0.1397 0.0 0)" rpy="$(optenv ROBOBOAT_IMU_UM6_RPY 0 0.0 0.0)" />
+    <parent link="$(arg suffix_ns)base_link" />
+    <child link="$(arg suffix_ns)imu_link" />
+  </joint>
+
+  <!-- Magnetometer -->
+  <gazebo>
+    <plugin name="mag_controller" filename="libhector_gazebo_ros_magnetic.so">
+      <updateRate>50</updateRate>
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <bodyName>$(arg suffix_ns)imu_link</bodyName>
+      <frameId>$(arg suffix_ns)imu_link</frameId>
+      <topicName>/$(arg suffix_ns)imu/mag</topicName>
+      <referenceHeading>90</referenceHeading>
+      <drift>0.0005 0.0005 0.0005</drift>
+      <gaussianNoise>0.025 0.025 0.025</gaussianNoise>
+    </plugin>
+  </gazebo>
+
+  <!-- Mount a Perfect Pose 3D sensor. -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="groundtruth_sim">
+      <updateRate>20.0</updateRate>
+      <robotNamespace>/$(arg namespace)</robotNamespace>
+      <bodyName>$(arg suffix_ns)base_link</bodyName>
+      <topicName>/$(arg suffix_ns)pose_gt</topicName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <frameName>world</frameName>
+    </plugin>
+  </gazebo>
+
+  <!-- Bow ZED-->
+  <xacro:vision_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" zed_id="0">
+      <origin xyz="0 0.33476 0.16129" rpy="1.5708 0 -3.14159" />
+  </xacro:vision_macro>
+
+  <!-- Stern ZED-->
+  <xacro:vision_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" zed_id="1">
+      <origin xyz="0 -0.33476 0.16129" rpy="1.5708 0 0" />
+  </xacro:vision_macro>
+
+  <!-- Bow LiDAR-->
+  <xacro:lidar_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" lidar_id="0">
+      <origin xyz="0 0.4399 0.07275" rpy="1.5708 0 3.14159" />
+  </xacro:lidar_macro>
+
+  <!-- Stern LiDAR-->
+  <xacro:lidar_macro robot_namespace="$(arg namespace)" suffix_ns="$(arg suffix_ns)" lidar_id="1">
+      <origin xyz="0 -0.4399 0.07275" rpy="1.5708 0 0" />
+  </xacro:lidar_macro>
+  
+</robot>

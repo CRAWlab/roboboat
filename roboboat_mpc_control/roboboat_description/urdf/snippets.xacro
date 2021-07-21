@@ -1,0 +1,577 @@
+<?xml version="1.0"?>
+
+<!--
+
+\file snippets.xacro
+
+TODO:
+* 
+
+Modified:
+*
+
+This file is based of the following:
+Software License Agreement (BSD)
+
+\file      snippets.xacro
+\authors   Guy Stoppi <gstoppi@clearpathrobotics.com>
+\copyright Copyright (c) 2018, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- MACRO FOR THRUSTER UNITS  -->
+  <!--
+    Thruster macro with integration of joint and link. The thrusters should
+    be initialized in the actuators.xacro file.
+  -->
+  <xacro:macro name="thruster_macro" params="robot_namespace suffix_ns thruster_id *origin">
+
+    <!--
+    Dummy link as place holder for the thruster frame,
+    since thrusters can often be inside the collision geometry
+    of the vehicle and may cause internal collisions if set otherwise
+    -->
+    <link name="${suffix_ns}thruster_${thruster_id}">
+
+      <visual>
+        <geometry>
+          <mesh filename="package://roboboat_description/meshes/base_link_to_port_bow.STL" />
+        </geometry>
+
+        <material
+          name="">
+          <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+
+      </visual>
+
+      <!--Is this causing some rotation? -->
+      <!-- Actuators not moving with hull -->
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.19483" />
+        <inertia
+          ixx="0.00013116"
+          ixy="8.7805E-08"
+          ixz="-1.5186E-07"
+          iyy="0.00012713"
+          iyz="-1.4655E-07"
+          izz="0.00018124" />
+      </inertial>
+
+    </link>
+
+    <!-- Joint between thruster link and vehicle base link -->
+    <joint name="${suffix_ns}thruster_${thruster_id}_joint" type="continuous">
+      <xacro:insert_block name="origin" />
+      <axis xyz="0 0 1" />
+      <parent link="${suffix_ns}base_link" />
+      <child link="${suffix_ns}thruster_${thruster_id}" />
+    </joint>
+
+    <gazebo>
+      <!-- Thruster ROS plugin -->
+      <plugin name="${robot_namespace}thruster_${thruster_id}_thruster_model" filename="libuuv_thruster_ros_plugin.so">
+        <!-- Name of the thruster link -->
+        <linkName>${suffix_ns}thruster_${thruster_id}</linkName>
+
+        <!-- Name of the joint between thruster and vehicle base link -->
+        <jointName>${suffix_ns}thruster_${thruster_id}_joint</jointName>
+
+        <!-- Make the thruster aware of its id -->
+        <thrusterID>${thruster_id}</thrusterID>
+
+        <!-- Gain of the input command signal -->
+        <gain>1</gain>
+
+        <!-- Maximum allowed input value for the input signal for thruster unit -->
+        <clampMax>100</clampMax>
+
+        <!-- Minimum allowed value for the input signal for thruster unit -->
+        <clampMin>-100</clampMin>
+
+        <!-- Minimum and maximum thrust force output allowed -->
+        <!-- Found from scaling the KgF values to Newtons from: https://bluerobotics.com/store/thrusters/t100-t200-thrusters/t200-thruster/ -->
+        <!-- Using 16V performance curve -->
+        <thrustMin>-40</thrustMin>
+        <thrustMax>51.5</thrustMax>
+
+        <!--
+        Value from 0 to 1 to set the efficiency of the output thrust force
+        Default value is 1.0
+        -->
+        <thrust_efficiency>1</thrust_efficiency>
+
+        <!--
+        Value from 0 to 1 to set the efficiency of the propeller as a factor
+        to be multiplied to the current value of the state variable at each
+        iteration.
+        Default value is 1.0
+        -->
+        <propeller_efficiency>1</propeller_efficiency>
+
+
+        <!-- 2) First order model -->
+        <dynamics>
+          <type>FirstOrder</type>
+          <timeConstant>0.05</timeConstant>
+        </dynamics>
+
+        <!-- 3) Linear interpolation
+        If you have access to the thruster's data sheet, for example,
+        you can enter samples of the curve's input and output values
+        and the thruster output will be found through linear interpolation
+        of the given samples.
+        -->
+        <conversion>
+          <type>LinearInterp</type>
+          <inputValues>-1.0 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1.0</inputValues>
+          <outputValues>-39.1 -29.32 -19.02 -10.00 -3.14 0.0 3.92 12.55 23.83 37.46 51.5</outputValues>
+        </conversion>
+
+      </plugin>
+    </gazebo>
+
+    <gazebo reference="${suffix_ns}thruster_${thruster_id}">
+      <selfCollide>false</selfCollide>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- MACRO FOR ZED  -->
+  <!--
+    ZED should be initialized in sensors.xacro
+  -->
+  <xacro:macro name="vision_macro" params="robot_namespace suffix_ns zed_id *origin">
+
+    <!--
+    Dummy link as place holder for the ZED frame.
+    -->
+    <link name="${suffix_ns}zed_${zed_id}">
+
+      <visual>
+        <geometry>
+          <mesh filename="package://roboboat_description/meshes/base_link_to_zed.STL" />
+        </geometry>
+
+        <material
+          name="">
+          <color
+            rgba="1 0.949019607843137 0.898039215686275 1" />
+        </material>
+
+      </visual>
+
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.60195216377255" />
+        <inertia
+          ixx="9.20940270137913E-05"
+          ixy="-2.6019949675702E-12"
+          ixz="-1.04112177713517E-13"
+          iyy="0.00145803695982764"
+          iyz="-3.92535178970676E-08"
+          izz="0.00144201732186554" />
+      </inertial>
+
+    </link>
+
+    <!-- Joint between zed link and vehicle base link -->
+    <joint name="${suffix_ns}zed_${zed_id}_joint" type="continuous">
+      <xacro:insert_block name="origin" />
+      <axis xyz="0 0 1" />
+      <parent link="${suffix_ns}base_link" />
+      <child link="${suffix_ns}zed_${zed_id}" />
+    </joint>
+    
+    <!-- Bow -->
+    <xacro:if value="${zed_id == 0}">
+      <gazebo reference="${suffix_ns}zed_${zed_id}">
+
+        <sensor type="multicamera" name="stereo_camera">
+          <update_rate>100.0</update_rate>
+
+          <camera name="left">
+            <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <!-- BA: can't find any info on this. I set this to be the ZED camera's depth range (meters). -->
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <camera name="right">
+            <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
+            <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
+            <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
+            <cameraName>multisense_sl/camera/${zed_id}</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>bow/zed_left_lens</frameName>
+            <rightFrameName>bow/zed_right_lens</rightFrameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+          </plugin>
+        </sensor>
+
+        <sensor name="bowPoints_camera" type="depth">
+          <update_rate>100</update_rate>
+
+          <camera>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <pose>0.00 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+          </camera>
+
+          <plugin name="bowPoints_controller" filename="libgazebo_ros_openni_kinect.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn> 
+<<<<<<< HEAD
+            <updateRate>100.0</updateRate>
+=======
+            <updateRate>1.0</updateRate>
+>>>>>>> origin/dev
+            <cameraName>bowPoints</cameraName>
+            <imageTopicName>/bowPoints/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/bowPoints/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/bowPoints/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/bowPoints/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/cloud</pointCloudTopicName>
+            <frameName>bowPoints</frameName>
+            <pointCloudCutoff>0.3</pointCloudCutoff>
+            <pointCloudCutoffMax>25.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+          </plugin>
+        </sensor>
+      </gazebo>
+
+    </xacro:if>
+
+    <!-- Stern -->
+    <xacro:if value="${zed_id == 1}">
+      <gazebo reference="${suffix_ns}zed_${zed_id}">
+
+        <sensor type="multicamera" name="stereo_camera">
+          <update_rate>100.0</update_rate>
+
+          <!-- Similar comments for <clip> tag as above -->
+          <camera name="left">
+            <pose>-0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <camera name="right">
+            <pose>0.07 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+
+          <plugin name="${suffix_ns}ZED_${zed_id}_controller" filename="libgazebo_ros_multicamera.so">
+            <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
+            <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
+            <cameraName>multisense_sl/camera/${zed_id}</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>stern/zed_left_lens</frameName>
+            <rightFrameName>stern/zed_right_lens</rightFrameName>-->
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+          </plugin>
+        </sensor>
+
+        <sensor name="sternPoints_camera" type="depth">
+          <update_rate>100</update_rate>
+
+          <camera>
+            <horizontal_fov>1.5707963</horizontal_fov>
+            <pose>0 0.33476 0.16129 -1.5707963 -1.5707963 0</pose>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.3</near>
+              <far>25</far>
+            </clip>
+          </camera>
+
+          <plugin name="sternPoints_controller" filename="libgazebo_ros_openni_kinect.so">
+            <baseline>0.2</baseline>
+            <alwaysOn>true</alwaysOn>
+<<<<<<< HEAD
+            <updateRate>100.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+=======
+            <updateRate>1.0</updateRate> <!-- BA: Should this be 100 Hz as well? -->
+>>>>>>> origin/dev
+            <cameraName>sternPoints</cameraName>
+            <imageTopicName>/sternPoints/color/image_raw</imageTopicName>
+            <cameraInfoTopicName>/sternPoints/color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>/sternPoints/depth/image_raw</depthImageTopicName>
+            <depthImageInfoTopicName>/sternPoints/depth/camera_info</depthImageInfoTopicName>
+            <pointCloudTopicName>/cloud</pointCloudTopicName>
+            <frameName>sternPoints</frameName>
+            <pointCloudCutoff>0.3</pointCloudCutoff>
+            <pointCloudCutoffMax>25.0</pointCloudCutoffMax>
+            <distortionK1>0.00000001</distortionK1>
+            <distortionK2>0.00000001</distortionK2>
+            <distortionK3>0.00000001</distortionK3>
+            <distortionT1>0.00000001</distortionT1>
+            <distortionT2>0.00000001</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0</hackBaseline>
+          </plugin>
+        </sensor>
+
+      </gazebo>
+    </xacro:if>
+
+  </xacro:macro>
+
+  <xacro:macro name="lidar_macro" params="robot_namespace suffix_ns lidar_id *origin">
+
+    <!--
+    Dummy link as place holder for the lidar frame.
+    -->
+    <link name="${suffix_ns}lidar_${lidar_id}">
+
+      <visual>
+        <geometry>
+          <mesh filename="package://roboboat_description/meshes/base_link_to_laser.STL" />
+        </geometry>
+
+        <material
+        name="">
+        <color
+          rgba="0.1098 0.1098 0.1098 1" />
+        </material>
+
+      </visual>
+
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.48577" />
+        <inertia
+          ixx="0.00018166"
+          ixy="-9.1879E-15"
+          ixz="-3.6642E-18"
+          iyy="0.00025601"
+          iyz="3.3496E-07"
+          izz="0.00018167" />
+      </inertial>
+
+    </link>
+
+    <!-- Joint between zed link and vehicle base link -->
+    <joint name="${suffix_ns}lidar_${lidar_id}_joint" type="continuous">
+      <xacro:insert_block name="origin" />
+      <axis xyz="0 0 1" />
+      <parent link="${suffix_ns}base_link" />
+      <child link="${suffix_ns}lidar_${lidar_id}" />
+    </joint>
+
+    <!-- Bow -->
+    <xacro:if value="${lidar_id == 0}">
+      <!-- LiDAR -->
+      <gazebo reference="${suffix_ns}lidar_${lidar_id}">
+        <sensor type="ray" name="head_hokuyo_sensor">
+          <pose>0 0.4399 0.07275 1.5708 0 3.14159</pose>
+          <visualize>false</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-2.3561925</min_angle>
+                <max_angle>2.3561925</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.10</min>
+              <max>30.0</max>
+              <!--<resolution>0.25</resolution> --><!-- This is for deg -->
+              <resolution>0.00436</resolution> <!-- This is for rad -->
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <!-- Noise parameters based on published spec for Hokuyo laser
+                   achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                   stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                   reading. -->
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <!-- <topicName>/laser/scan/${lidar_id}</topicName> -->
+            <topicName>/scan</topicName>
+            <frameName>hokuyo_link_${lidar_id}</frameName>
+          </plugin>
+        </sensor>
+      </gazebo>
+    </xacro:if>
+
+    <!-- Stern -->
+    <xacro:if value="${lidar_id == 1}">
+      <!-- LiDAR -->
+      <gazebo reference="${suffix_ns}lidar_${lidar_id}">
+        <sensor type="ray" name="head_hokuyo_sensor">
+          <pose>0 -0.4399 0.07275 1.5708 0 0</pose>
+          <visualize>false</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-2.3561925</min_angle>
+                <max_angle>2.3561925</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.10</min>
+              <max>30.0</max>
+              <!--<resolution>0.25</resolution> --><!-- This is for deg -->
+              <resolution>0.00436</resolution> <!-- This is for rad -->
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <!-- Noise parameters based on published spec for Hokuyo laser
+                   achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                   stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                   reading. -->
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <!-- <topicName>/laser/scan/${lidar_id}</topicName> -->
+            <topicName>/scan</topicName>
+            <frameName>hokuyo_link_${lidar_id}</frameName>
+          </plugin>
+        </sensor>
+      </gazebo>
+    </xacro:if>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,3 @@
+## RoboBoat Navio Data
+
+Package that reads data from the [Navio2](https://navio2.emlid.com), using the [Python API](https://docs.emlid.com/navio2/dev/pinout) and publish the info as standard ROS message types. The code used to read the Navio2 is largely based around the example code in [this repository](https://github.com/emlid/Navio2/tree/master/Python). Note that to use that code, you will need to replace the `navio` import with `navio2`. Pure Python scripts testing this code can be found in the [RoboBoat 2021 repository](https://github.com/CRAWlab/RoboBoat-2021/tree/master/navio_test_scripts).
